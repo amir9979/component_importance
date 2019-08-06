@@ -75,13 +75,16 @@ class D4JLang(object):
         return True
 
     def get_buggy_functions(self):
-        if self.is_marked():
+        if self.is_marked() and os.path.exists(self.dir_id.bugs):
             with open(self.dir_id.bugs) as f:
                 self.bugs = json.loads(f.read())
         else:
-            self.bugs = map(lambda x: x.split("@")[1].lower(), javadiff.diff.get_modified_functions(self.dir_id.clones))
+            self.bugs = map(lambda x: x.split("@")[1].lower().replace(',', ';'), javadiff.diff.get_modified_functions(self.dir_id.clones))
             with open(self.dir_id.bugs, "wb") as f:
                 json.dump(self.bugs, f)
+        if self.bugs:
+            return True
+        return False
 
     def clear(self):
         git.Repo(self.dir_id.clones).git.checkout('--', '.')
@@ -99,7 +102,8 @@ class D4JLang(object):
         self.clone()
         self.clear()
         self.apply_patch()
-        self.get_buggy_functions()
+        if not self.get_buggy_functions():
+            return
         self.fix()
         self.clean_execution()
         if self.get_tests_to_trace():
@@ -109,12 +113,13 @@ class D4JLang(object):
                 self.save_as_sfl_matrix()
 
     def save_as_sfl_matrix(self):
-        if self.is_marked():
+        if self.is_marked() or True:
             self.get_tests_to_trace()
             self.get_buggy_functions()
             self.trace()
             tests_details = []
-            bugs = self.bugs
+            bugs = map(lambda b: b.replace(',', ';'), self.bugs)
+            print bugs
             for test in self.traces:
                 nice_trace = list(set(map(
                     lambda t: t.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""),
