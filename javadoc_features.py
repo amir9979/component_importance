@@ -1,9 +1,9 @@
 from html.parser import HTMLParser
 
 
-class MLStripper(HTMLParser):
+class MLStripper(object, HTMLParser):
     def __init__(self):
-        super(HTMLParser, self).__init__()
+        super(MLStripper, self).__init__()
         self.reset()
         self.strict = False
         self.convert_charrefs= True
@@ -13,17 +13,17 @@ class MLStripper(HTMLParser):
     def get_data(self):
         return ''.join(self.fed)
 
-def strip_tags(html):
-    s = MLStripper()
-    s.feed(html)
-    return s.get_data()
+    @staticmethod
+    def strip_tags(html):
+        s = MLStripper()
+        s.feed(html)
+        return s.get_data()
 
 import nltk, string
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-def ngrams(sentence, n):
-  return zip(*[sentence.split()[i:] for i in range(n)])
-
+def ngrams(text, n):
+    return zip(*[normalize(text).split()[i:] for i in range(n)])
 
 nltk.download('punkt') # if necessary...
 
@@ -35,7 +35,7 @@ def stem_tokens(tokens):
 
 '''remove punctuation, lowercase, stem'''
 def normalize(text):
-    return stem_tokens(nltk.word_tokenize(strip_tags(text).lower().translate(remove_punctuation_map)))
+    return stem_tokens(nltk.word_tokenize(MLStripper.strip_tags(text).lower().translate(remove_punctuation_map)))
 
 vectorizer = TfidfVectorizer(tokenizer=normalize, stop_words='english')
 

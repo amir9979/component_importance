@@ -3,8 +3,10 @@ import os
 
 class DirStructure(object):
     DIRS = ["clones", "mvn_outputs", "matrices", "traces", "traces_json", "call_graphs", "execution_graphs",
-            "javadoc", "files_packages", "files_commits", "mark", "bugs", "sanity_experiments"]
-    RESULTS = ["sanity"]
+            "javadoc", "files_packages", "files_commits", "mark", "bugs", "experiments", "files_functions",
+            "labels", "features", "labeled_data", "unlabeled_data", "training_set", "testing_set", "files_traces", "tests_results",
+            "feature_importance", "classification_metrics", "training_describe", "testing_describe"]
+    RESULTS = ["experiment"]
 
     def __init__(self, base_path):
         self.base_path = base_path
@@ -15,6 +17,8 @@ class DirStructure(object):
 
     @staticmethod
     def mkdir(path):
+        if os.path.exists(path):
+            return path
         for _ in range(10):
             if not os.path.exists(path):
                 try:
@@ -29,4 +33,8 @@ class DirId(object):
         self.dir_structure = dir_structure
         self.id = id
         for dir in DirStructure.DIRS:
-            setattr(self, dir, os.path.join(getattr(dir_structure, dir), id))
+            setattr(self, dir, os.path.join(DirStructure.mkdir(getattr(dir_structure, dir)), id))
+
+    def read_file(self, attr):
+        with open(getattr(self, attr)) as f:
+            return f.read()
