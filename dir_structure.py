@@ -5,7 +5,7 @@ class DirStructure(object):
     DIRS = ["clones", "mvn_outputs", "matrices", "traces", "traces_json", "call_graphs", "execution_graphs",
             "javadoc", "files_packages", "files_commits", "mark", "bugs", "experiments", "files_functions",
             "labels", "features", "labeled_data", "unlabeled_data", "training_set", "testing_set", "files_traces", "tests_results",
-            "feature_importance", "classification_metrics", "training_describe", "testing_describe"]
+            "feature_importance", "classification_metrics", "training_describe", "testing_describe", "experiment_matrices"]
     RESULTS = ["experiment"]
 
     def __init__(self, base_path):

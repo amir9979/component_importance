@@ -35,6 +35,7 @@ class project_fixer(object):
 
     def get_test_annotation(self, test_file, test_name):
         annotation = "@Test"
+        override_annotation = "@Override"
         with open(test_file) as f:
             lines = f.readlines()
         test_lines = map(lambda t: t[0], filter(lambda x: test_name in x[1], enumerate(lines)))
@@ -43,6 +44,8 @@ class project_fixer(object):
         for test_line in test_lines:
             if annotation in lines[test_line - 1]:
                 self.comment_line(test_file, test_line - 1)
+                if override_annotation in lines[test_line - 2]:
+                    self.comment_line(test_file, test_line - 2)
             self.rename_test(test_file, test_name)
 
     def rename_test(self, test_file, test_name):

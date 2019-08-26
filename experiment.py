@@ -63,6 +63,7 @@ class ExperimentMatrix(object):
         return self.bugs
 
     def experiment(self):
+        DirStructure.mkdir(self.dir_id.experiment_matrices)
         if not os.path.exists(self.dir_id.matrices):
             return
         if not self.bugs:
@@ -76,6 +77,8 @@ class ExperimentMatrix(object):
                     print(matrix_name)
                     matrix = copy.deepcopy(json_matrix)
                     matrix.update(influence_data)
+                    with open(os.path.join(self.dir_id.experiment_matrices, matrix_name + str(alpha)), "wb") as f:
+                        json.dump(matrix, f)
                     ei = read_json_planning_instance(matrix)
                     ei.diagnose()
                     results.setdefault(matrix_name, dict())[alpha] = Diagnosis_Results(ei.diagnoses, ei.initial_tests, ei.error).metrics

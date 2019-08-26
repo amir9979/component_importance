@@ -1,9 +1,9 @@
 from project_fixer import project_fixer
-from d4j import D4J
+from d4j import D4JReproducer
 import os
 
 
-class D4JLang(D4J):
+class D4JLang(D4JReproducer):
     LANG_REPO = r"C:\temp\defects4j-lang"
     LANG_D4J_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), r"projects\lang"))
     ToStringBuilderTest = [r"src/test/java/org/apache/commons/lang3/builder/ToStringBuilderTest.java",
@@ -17,8 +17,8 @@ class D4JLang(D4J):
                           r"src\test\org\apache\commons\lang3\time\FastDateFormatTest.java",
                           r"src\test\org\apache\commons\lang\time\FastDateFormatTest.java"]
 
-    def __init__(self, id, buggy, fixed, bug_key, bug_url, json_data, dir_id):
-        super(D4JLang, self).__init__(id, buggy, fixed, bug_key, bug_url, json_data, dir_id)
+    def __init__(self, id, fixed, failing_tests, dir_id):
+        super(D4JLang, self).__init__(id, fixed, failing_tests, dir_id)
 
     def get_repo(self):
         return D4JLang.LANG_REPO
