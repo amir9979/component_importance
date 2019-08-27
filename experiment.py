@@ -98,7 +98,7 @@ class ExperimentMatrix(object):
 
 
 if __name__ == "__main__":
-    # ExperimentMatrix.experiment_classifiers(DirId(DirStructure(r"C:\amirelm\component_importnace\data\d4j_lang12"), sys.argv[1]))
-    # exit()
+    ExperimentMatrix.experiment_classifiers(DirId(DirStructure(r"C:\amirelm\component_importnace\data\maven_1"), sys.argv[1]))
+    exit()
     Experiment(DirStructure(r"C:\amirelm\component_importnace\data\d4j_lang12")).experiment()
     # pass

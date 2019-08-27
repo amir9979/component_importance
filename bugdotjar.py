@@ -38,13 +38,23 @@ class BugDotJar(Reproducer):
         Popen(['git', '-C', self.get_dir_id().clones, "checkout", branches[0]]).wait()
 
     def fix(self):
-        pass
+        for root, dirs, files in os.walk(self.get_repo()):
+            for file_name in filter(lambda x: x.endswith('.sh'), files):
+                with open(file_name) as f:
+                    lines = map(lambda x: x.replace('\r', ''), f.readlines())
+                with open(file_name, "wb") as f:
+                    f.writelines(lines)
 
     def get_repo(self):
         return BugDotJar.BugDotJar_repo.format(self.project)
 
     @staticmethod
-    def read_bugs_json(dir_path, project):
+    def read_bugs_json(project, dir_path=None):
+        if dir_path is None:
+            dir_path = os.path.join(r"C:\amirelm\component_importnace\data", project+"_1")
+            if not os.path.exists(dir_path):
+                os.mkdir(dir_path)
+        assert dir_path
         bugs = filter(lambda b: b['project'].lower() == project.lower(), json.load(open(BugDotJar.BugDotJar_JSON)))
         projects = []
         for bug in bugs:
@@ -60,5 +70,5 @@ class BugDotJar(Reproducer):
 
 
 if __name__ == "__main__":
-    projects = BugDotJar.read_bugs_json(r"C:\amirelm\component_importnace\data\bdj", sys.argv[1])
-    projects[int(sys.argv[2])].do_all()
+    projects = BugDotJar.read_bugs_json(sys.argv[1])
+    projects[int(sys.argv[2])].save_traces()

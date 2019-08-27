@@ -130,8 +130,8 @@ class InstanceFeatureExtraction(object):
         self.features = dict()
 
     def extract(self):
-        self.call_graph()
-        self.execution_graph()
+        # self.call_graph()
+        # self.execution_graph()
         self.semantic_name()
         # self.javadoc()
         # self.commits_data()
