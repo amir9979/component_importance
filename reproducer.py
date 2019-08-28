@@ -2,12 +2,18 @@ import csv
 import json
 import git
 import os
-from mvnpy.Repo import Repo
+try:
+    from mvnpy.Repo import Repo
+except:
+    from Repo import Repo
 from subprocess import Popen
 from dir_structure import DirStructure, DirId
 import networkx
 from sfl_diagnoser.Diagnoser.diagnoserUtils import write_json_planning_file, read_json_planning_file
-from mvnpy.jcov_parser import JcovParser
+try:
+    from mvnpy.jcov_parser import JcovParser
+except:
+    from jcov_parser import JcovParser
 import sys
 from feature_extraction import FeatureExtraction
 from javadiff.SourceFile import SourceFile
