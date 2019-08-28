@@ -2,7 +2,6 @@ from run_process import main
 import csv
 import json
 from tempfile import mktemp
-from d4j import D4J
 import os
 
 

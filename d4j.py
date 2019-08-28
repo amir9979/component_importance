@@ -2,7 +2,6 @@ import csv
 import json
 import git
 import os
-from mvnpy.Repo import Repo
 from subprocess import Popen
 from dir_structure import DirStructure, DirId
 import javadiff.diff
