@@ -5,14 +5,14 @@ from tempfile import mktemp
 import os
 
 
-def create_csv_for_project(project, num_processes=10):
+def create_csv_for_project(project, num_processes=15):
     dirs = map(lambda x: project.lower() + str(x), range(20))
     dir_name = None
-    listdir = os.listdir(r'C:\amirelm\component_importnace\data')
+    listdir = os.listdir(r'd:\amirelm\component_importnace\data')
     for dir in dirs:
-        if dir not in listdir:
-            dir_name = os.path.join(r'C:\amirelm\component_importnace\data', dir)
-            os.mkdir(dir_name)
+        if dir in listdir:
+            dir_name = os.path.join(r'd:\amirelm\component_importnace\data', dir)
+            # os.mkdir(dir_name)
             print dir_name
             break
     assert dir_name

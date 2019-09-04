@@ -5,11 +5,10 @@ import networkx
 import difflib
 import textdistance
 from html.parser import HTMLParser
-import nltk
+# import nltk
 import string
-from sklearn.feature_extraction.text import TfidfVectorizer
 from collections import Counter
-from nltk.corpus import stopwords
+# from nltk.corpus import stopwords
 import re
 import sys
 import time
@@ -17,12 +16,10 @@ import csv
 import math
 import numpy as np
 from itertools import chain
-from nltk.util import ngrams # This is the ngram magic.
-from textblob import TextBlob
 from itertools import chain, combinations
 
-nltk.download('stopwords')
-nltk.download('punkt') # if necessary...
+# nltk.download('stopwords')
+# nltk.download('punkt') # if necessary...
 
 
 class MLStripper(object, HTMLParser):
@@ -226,6 +223,7 @@ class InstanceFeatureExtraction(object):
 
         def get_tuples_textblob_sentences(txt, n):
             """New get_tuples that does use textblob."""
+            from textblob import TextBlob
             if not txt: return None
             tb = TextBlob(txt)
             ng = (ngrams(x.words, n) for x in tb.sentences if len(x.words) > n)
@@ -291,10 +289,12 @@ class InstanceFeatureExtraction(object):
             for func_doc_name, func_doc in get_doc(self.function):
                 if not func_doc:
                     continue
+                from sklearn.feature_extraction.text import TfidfVectorizer
                 vectorizer = TfidfVectorizer(tokenizer=normalize, stop_words='english')
                 # tfidf = vectorizer.fit_transform([test_doc, func_doc])
                 # self.features["cosine_sim_{0}_{1}".format(test_doc_name, func_doc_name)] = ((tfidf * tfidf.T).A)[0,1]
                 for n in range(2, 6):
+                    from nltk.util import ngrams  # This is the ngram magic.
                     for getter in [get_tuples_manual_sentences, get_tuples_nltk_punkt_sentences, get_tuples_nosentences, get_tuples_textblob_sentences]:
                         test_ngrams = getter(test_doc, n)
                         function_ngrams = getter(func_doc, n)

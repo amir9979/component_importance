@@ -78,7 +78,8 @@ class Reproducer(object):
         if self.is_marked():
             traces = list(JcovParser(self.get_dir_id().traces, short_type=True).parse())
         else:
-            traces = list(repo.run_under_jcov(self.get_dir_id().traces, False, instrument_only_methods=True, short_type=True))
+            tests_to_run = map(lambda t: ".".join(t.split('.')[:5] + ['*']),self.failing_tests)
+            traces = list(repo.run_under_jcov(self.get_dir_id().traces, False, instrument_only_methods=True, short_type=True, tests_to_run=tests_to_run))
         self.traces = dict(map(lambda t: (t.test_name, t), traces))
 
     def get_optimized_traces(self):
@@ -133,7 +134,8 @@ class Reproducer(object):
         pass
 
     def clear(self):
-        git.Repo(self.get_dir_id().clones).git.checkout('--', '.')
+        # git.Repo(self.get_dir_id().clones).git.checkout('--', '.')
+        pass
 
     def mark(self):
         with open(self.get_dir_id().mark, "w") as f:
