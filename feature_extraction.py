@@ -83,12 +83,12 @@ class FeatureExtraction(object):
         self.extract_all_data()
         self.get_testing_set()
 
-    def get_training_set(self, dir_structure):
+    def get_training_set(self):
         csv_header = ["test_name", "function_name"]
         csv_data = []
         features_header_added = False
-        for matrix_id in os.listdir(dir_structure.mark):
-            dir_id = DirId(dir_structure, matrix_id)
+        for matrix_id in os.listdir(self.dir_id.dir_structure.mark):
+            dir_id = DirId(self.dir_id.dir_structure, matrix_id)
             if not os.path.exists(dir_id.labeled_data):
                 continue
             with open(dir_id.labeled_data) as f:
