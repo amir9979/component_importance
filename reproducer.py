@@ -142,7 +142,7 @@ class Reproducer(object):
             f.write("executed_succesfully")
 
     def is_marked(self):
-        return os.path.exists(self.get_dir_id().mark)
+        return self.get_dir_id().is_marked()
 
     def dump(self):
         if self.is_marked():
@@ -159,6 +159,7 @@ class Reproducer(object):
             if self.extract_tests_to_trace():
                 self.mark()
                 self.save_as_sfl_matrix()
+                self.save_tests_results()
 
     def save_as_sfl_matrix(self):
         if self.is_marked():
@@ -255,29 +256,41 @@ class Reproducer(object):
             json.dump(labels, f)
 
     def save_traces(self):
-        self.get_optimized_traces()
-        traces = dict()
-        for test in self.optimized_traces.values():
-            nice_trace = list(set(map(
-                lambda t: t.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""),
-                test.get_trace())))
-            traces[test.test_name] = nice_trace
-            if test.test_name + "()" in nice_trace:
-                nice_trace.remove(test.test_name + "()")
-        with open(self.get_dir_id().traces_json, "wb") as f:
-            json.dump(traces, f)
+        if self.is_marked():
+            self.get_optimized_traces()
+            traces = dict()
+            for test in self.optimized_traces.values():
+                nice_trace = list(set(map(
+                    lambda t: t.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""),
+                    test.get_trace())))
+                traces[test.test_name] = nice_trace
+                if test.test_name + "()" in nice_trace:
+                    nice_trace.remove(test.test_name + "()")
+            with open(self.get_dir_id().traces_json, "wb") as f:
+                json.dump(traces, f)
 
     def save_tests_results(self):
-        self.get_optimized_traces()
-        data = dict(map(lambda t: (t, self.get_surefire_tests()[t].outcome == 'pass'), self.optimized_traces))
-        with open(self.get_dir_id().tests_results, "wb") as f:
-            json.dump(data, f)
+        if self.is_marked():
+            self.get_optimized_traces()
+            data = dict(map(lambda t: (t, self.get_surefire_tests()[t].outcome == 'pass'), self.optimized_traces))
+            with open(self.get_dir_id().tests_results, "wb") as f:
+                json.dump(data, f)
 
     def do_all(self):
         self.dump()
         self.data_extraction()
         if self.is_marked():
             FeatureExtraction(self.get_dir_id()).extract()
+
+    def get_training_set(self):
+        FeatureExtraction(self.get_dir_id()).get_training_set()
+
+    def get_testing_set(self):
+        FeatureExtraction(self.get_dir_id()).get_testing_set()
+
+    def experiment(self):
+        from experiment import ExperimentMatrix
+        ExperimentMatrix.experiment_classifiers(self.dir_id)
 
 
 if __name__ == "__main__":

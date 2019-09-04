@@ -8,15 +8,24 @@ import sys
 from sfl_diagnoser.Diagnoser.diagnoserUtils import write_json_planning_file, read_json_planning_instance, read_json_planning_file
 from sfl_diagnoser.Diagnoser.Experiment_Data import Experiment_Data
 from sfl_diagnoser.Diagnoser.Diagnosis_Results import Diagnosis_Results
+from operator import itemgetter
+from numpy import mean
 
 
 class Experiment(object):
     def __init__(self, dir_structure):
         self.dir_structure = dir_structure
-        self.matrices = filter(lambda x: x.is_ok(), map(lambda x: ExperimentMatrix(DirId(self.dir_structure, x)), os.listdir(self.dir_structure.matrices)))
+        self.matrices = []
+        for x in os.listdir(self.dir_structure.matrices):
+            try:
+                e = ExperimentMatrix(DirId(self.dir_structure, x))
+                if e.is_ok():
+                    self.matrices.append(e)
+            except:
+                pass
 
-    def experiment(self):
-        sanity_results = dict(map(lambda s: (s.matrix_id, s.experiment()), self.matrices))
+    def experiment(self, skip_if_not_exists=False):
+        sanity_results = dict(map(lambda s: (s.matrix_id, s.experiment()), filter(lambda x: x.is_exists() or not skip_if_not_exists, self.matrices)))
         results_header = ["id", "matrix_name", "alpha"]
         metrics_header_added = False
         results = []
@@ -32,6 +41,23 @@ class Experiment(object):
                     results_row = [id, matrix_name, alpha] + map(lambda h: metrics[h], header)
                     results.append(results_row)
         with open(self.dir_structure.experiment, "wb") as f:
+            csv.writer(f).writerows(results)
+        self.classification_evaluate()
+
+    def classification_evaluate(self):
+        def dir_classifiers(dir_name):
+            return dict(map(lambda x: (x, json.load(open(os.path.join(dir_name, x)))), os.listdir(dir_name)))
+        dirs = map(lambda x: os.path.join(self.dir_structure.classification_metrics, x), os.listdir(self.dir_structure.classification_metrics))
+        a = map(dir_classifiers, dirs)
+        metrics = sorted(a[0].values()[0].keys())
+        classifiers_data = dict(
+            map(lambda k: (k, reduce(list.__add__, map(lambda res: res.get(k, {}).items(), a), [])), a[0].keys()))
+        classifiers_evaluation = dict(map(lambda d: (d, dict(map(lambda metric: (metric, mean(map(itemgetter(1), filter(lambda x: metric==x[0], classifiers_data[d])))), metrics))), classifiers_data))
+        results = [["classifier_name"] + metrics]
+        for classifier_name in classifiers_evaluation:
+            results_row = [classifier_name] + map(lambda h: classifiers_evaluation[classifier_name][h], metrics)
+            results.append(results_row)
+        with open(self.dir_structure.classification_evaluate, "wb") as f:
             csv.writer(f).writerows(results)
 
 
@@ -62,6 +88,9 @@ class ExperimentMatrix(object):
     def is_ok(self):
         return self.bugs
 
+    def is_exists(self):
+        return os.path.exists(self.dir_id.experiments)
+
     def experiment(self):
         DirStructure.mkdir(self.dir_id.experiment_matrices)
         if not os.path.exists(self.dir_id.matrices):
@@ -74,7 +103,7 @@ class ExperimentMatrix(object):
                 json_matrix = json.loads(f.read())
             for alpha in ExperimentMatrix.ALPHA_RANGE:
                 for matrix_name, influence_data in self.generate_influence_data(alpha):
-                    print(matrix_name)
+                    print alpha, matrix_name
                     matrix = copy.deepcopy(json_matrix)
                     matrix.update(influence_data)
                     with open(os.path.join(self.dir_id.experiment_matrices, matrix_name + str(alpha)), "wb") as f:
@@ -89,16 +118,20 @@ class ExperimentMatrix(object):
 
     @staticmethod
     def experiment_classifiers(dir_id):
-        from sanity_classify import SanityClassify
+        from sanity_classify import SanityClassify, StaticClassify, RandomClassify, DoubleSanityClassify
         from learning_classify import LearningClassify
         experiment_matrix = ExperimentMatrix(dir_id)
         map(experiment_matrix.add_classifer, SanityClassify.get_all_sanity_classifers(dir_id))
-        # map(experiment_matrix.add_classifer, LearningClassify.get_all_classifers(dir_id))
+        map(experiment_matrix.add_classifer, StaticClassify.get_all_static_classifers(dir_id))
+        map(experiment_matrix.add_classifer, RandomClassify.get_all_random_classifers(dir_id))
+        # map(experiment_matrix.add_classifer, DoubleSanityClassify.get_all_double_classifers(dir_id))
+        map(experiment_matrix.add_classifer, LearningClassify.get_all_classifers(dir_id))
         experiment_matrix.experiment()
 
 
 if __name__ == "__main__":
-    ExperimentMatrix.experiment_classifiers(DirId(DirStructure(r"C:\amirelm\component_importnace\data\maven_1"), sys.argv[1]))
-    exit()
-    Experiment(DirStructure(r"C:\amirelm\component_importnace\data\d4j_lang12")).experiment()
+    # ExperimentMatrix.experiment_classifiers(DirId(DirStructure(r"C:\amirelm\component_importnace\data\maven_3"), sys.argv[1]))
+    # exit()
+    ExperimentMatrix.experiment_classifiers(DirId(DirStructure(sys.argv[1]), sys.argv[2]))
+    # Experiment(DirStructure(r"C:\amirelm\component_importnace\data\maven_1")).experiment()
     # pass

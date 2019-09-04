@@ -49,9 +49,9 @@ class BugDotJar(Reproducer):
         return BugDotJar.BugDotJar_repo.format(self.project)
 
     @staticmethod
-    def read_bugs_json(project, dir_path=None):
+    def read_bugs_json(project, dir_path=None, index='3'):
         if dir_path is None:
-            dir_path = os.path.join(r"C:\amirelm\component_importnace\data", project+"_1")
+            dir_path = os.path.join(r"C:\amirelm\component_importnace\data", project+"_"+index)
             if not os.path.exists(dir_path):
                 os.mkdir(dir_path)
         assert dir_path
@@ -70,5 +70,15 @@ class BugDotJar(Reproducer):
 
 
 if __name__ == "__main__":
-    projects = BugDotJar.read_bugs_json(sys.argv[1])
-    projects[int(sys.argv[2])].save_traces()
+    if len(sys.argv) == 1:
+        from experiment import Experiment
+        # Experiment(DirStructure(r"C:\amirelm\component_importnace\data\maven_3")).experiment(True)
+#        Experiment(DirStructure(r"C:\amirelm\component_importnace\data\maven_3")).classification_evaluate()
+        projects = BugDotJar.read_bugs_json("wicket", r"C:\amirelm\component_importnace\data\wicket_3")
+        projects[251].save_traces()
+
+    else:
+        projects = BugDotJar.read_bugs_json(sys.argv[1])
+        projects[int(sys.argv[2])].save_traces()
+    # projects = BugDotJar.read_bugs_json("maven")
+    # projects[5].save_tests_results()

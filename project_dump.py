@@ -1,4 +1,4 @@
-from run_process import main
+from run_process import main_cmds
 import csv
 import json
 from tempfile import mktemp
@@ -17,12 +17,8 @@ def create_csv_for_project(project, num_processes=15):
             break
     assert dir_name
     cmds = map(lambda x: ["python.exe", "d4j.py", dir_name, project, str(x)], range(200))
-    file_name = mktemp()
-    with open(file_name, 'wb') as f:
-        csv.writer(f).writerows(cmds)
-    main(num_processes, file_name)
-    os.remove(file_name)
+    main_cmds(num_processes, cmds)
 
 
 if __name__ == "__main__":
-    create_csv_for_project('Math')
+    create_csv_for_project('Lang')
