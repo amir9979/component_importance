@@ -70,17 +70,18 @@ class Reproducer(object):
         with open(self.get_dir_id().mvn_outputs, "w") as f:
             f.write(build_report)
 
-    def trace(self, trace_all=False):
+    def trace(self, trace_failed=False):
         repo = Repo(self.get_dir_id().clones)
         DirStructure.mkdir(self.get_dir_id().traces)
         if self.test_traces:
             return
-        if self.is_marked():
+        if self.is_marked() and False:
             traces = list(JcovParser(self.get_dir_id().traces, short_type=True).parse())
         else:
             tests_to_run = map(lambda t: ".".join(t.split('.')[:5]) + '*', self.failing_tests)
-            tests = tests_to_run if trace_all else None
-            traces = list(repo.run_under_jcov(self.get_dir_id().traces, False, instrument_only_methods=True, short_type=True, tests_to_run=tests))
+            tests = tests_to_run if trace_failed else None
+            self.clear()
+            traces = list(repo.run_under_jcov(self.get_dir_id().traces, False, instrument_only_methods=True, short_type=True, tests_to_run=tests, check_comp_error=False))
         self.test_traces = dict(map(lambda t: (t.test_name, t), traces))
 
     def get_optimized_traces(self):
@@ -95,7 +96,9 @@ class Reproducer(object):
         failing_tests = []
         surefire_tests = self.get_surefire_tests().keys()
         for test in self.failing_tests:
-            surefire_test = filter(lambda t: test.lower() in t, surefire_tests)
+            surefire_test = list(filter(lambda t: test.lower() in t.lower(), surefire_tests))
+            if len(surefire_test) != 1:
+                surefire_test = list(filter(lambda t: test.lower() == t.lower(), surefire_tests))
             if len(surefire_test) != 1:
                 return []
             failing_tests.append(surefire_test[0])

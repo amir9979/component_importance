@@ -1,5 +1,5 @@
 import os
-
+import time
 
 class DirStructure(object):
     DIRS = ["clones", "mvn_outputs", "matrices", "traces", "traces_json", "call_graphs", "execution_graphs",
@@ -27,9 +27,11 @@ class DirStructure(object):
         for _ in range(10):
             if not os.path.exists(path):
                 try:
-                    os.mkdir(path)
-                except:
-                    pass
+                    os.makedirs(path)
+                    if not os.path.exists(path):
+                        time.sleep(1)
+                except Exception as e:
+                    time.sleep(1)
         return path
 
 
