@@ -72,5 +72,7 @@ class BugMinerReproducer(Reproducer):
 
 if __name__ == "__main__":
     projects = BugMinerReproducer.read_bug_miner_csv(sys.argv[1], sys.argv[2])
-    # sorted(projects.items(), key=lambda x: x[0])[int(sys.argv[3])][1].do_all()
-    sorted(projects.items(), key=lambda x: x[0])[int(sys.argv[3])][1].get_training_set()
+    if len(sys.argv) == 4:
+        sorted(projects.items(), key=lambda x: x[0])[int(sys.argv[3])][1].do_all()
+    else:
+        sorted(projects.items(), key=lambda x: x[0])[int(sys.argv[3])][1].get_training_set()
