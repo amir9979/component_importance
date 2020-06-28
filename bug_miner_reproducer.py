@@ -10,7 +10,7 @@ from reproducer import Reproducer
 from subprocess import Popen
 import tempfile
 from ast import literal_eval
-
+import pandas as pd
 
 class BugMinerReproducer(Reproducer):
     BUG_MINER_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), r"bug_miner"))
@@ -58,11 +58,11 @@ class BugMinerReproducer(Reproducer):
 
     @staticmethod
     def read_bug_miner_csv(dir_path, project_name):
-        l = list(csv.reader(open(os.path.join(BugMinerReproducer.BUG_MINER_DIR, project_name + ".csv"))))
-        header = l[0]
+        csv_path = os.path.join(BugMinerReproducer.BUG_MINER_DIR, project_name + ".csv")
+        df = pd.read_csv(csv_path)
         ans = dict()
         commits = dict()
-        map(lambda x: commits.setdefault(x['parent'], []).append(x), map(lambda x: dict(zip(header, x)), l[1:]))
+        map(lambda x: commits.setdefault(x['parent'], []).append(x), map(lambda y: y[1].to_dict(), df.iterrows()))
         for bug_data in commits:
             ans[bug_data] = BugMinerReproducer(bug_data, list(set(map(lambda x: x['testcase'], commits[bug_data]))),
                                DirId(DirStructure(dir_path), bug_data),
@@ -73,6 +73,6 @@ class BugMinerReproducer(Reproducer):
 if __name__ == "__main__":
     projects = BugMinerReproducer.read_bug_miner_csv(sys.argv[1], sys.argv[2])
     if len(sys.argv) == 4:
-        sorted(projects.items(), key=lambda x: x[0])[int(sys.argv[3])][1].do_all()
+        projects[sys.argv[3]].do_all()
     else:
-        sorted(projects.items(), key=lambda x: x[0])[int(sys.argv[3])][1].get_training_set()
+        projects[sys.argv[3]].get_training_set()
