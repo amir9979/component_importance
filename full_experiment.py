@@ -38,7 +38,7 @@ def experiment_execute(project, dir_path):
 def execute(func, iter, num_processes=NUM_PROCCESSES):
     p = Pool(num_processes)
     p.map(func, iter)
-    p.join()
+    # p.join()
     p.close()
 
 
