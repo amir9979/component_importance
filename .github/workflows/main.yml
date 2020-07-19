@@ -48,8 +48,8 @@ jobs:
     - name: Checkout sfl
       uses: actions/checkout@v2
       with:
-        repository: amir9979/SFL-diagnoser
-        path: ./sfl
+        repository: amir9979/sfl
+        path: ./sfl_code
         fetch-depth: 0
     
 
@@ -57,16 +57,16 @@ jobs:
       run: python -m pip --version
 
     - name: setup sfl
-      run: python sfl/setup.py install
+      run: python sfl_code/setup.py install
 
     - name: freeze
       run: python -m pip freeze
 
     - name: freeze
-      run: python -m pip show sfl-diagnoser
+      run: python -m pip show sfl
 
     - name: import sfl
-      run: python -c "from sfl_diagnoser.Diagnoser.diagnoserUtils import write_json_planning_file"
+      run: python -c "from sfl.Diagnoser.diagnoserUtils import write_json_planning_file"
 
     - name: execute experiment
       run: python full_experiment.py ${{github.event.issue.title}}
