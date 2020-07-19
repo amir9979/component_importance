@@ -60,11 +60,11 @@ jobs:
 #     - name: setup sfl
 #       run: python sfl_code/setup.py install
 
-    - name: freeze
-      run: python -m pip freeze
+#     - name: freeze
+#       run: python -m pip freeze
 
-    - name: freeze
-      run: python -m pip show sfl
+#     - name: freeze
+#       run: python -m pip show sfl
 
 #     - name: import sfl
 #       run: ls -R
