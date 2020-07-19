@@ -40,6 +40,10 @@ jobs:
         pip install enum 
         pip install pathlib
         pip install junitparser
+        pip install pandas
+        pip install numpy
+        pip install scipy
+        pip install sklearn
 
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
