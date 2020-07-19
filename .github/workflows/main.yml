@@ -50,15 +50,15 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: amir9979/sfl
-        path: ./sfl_code
+        path: .
         fetch-depth: 0
     
 
     - name: setup pip version
       run: python -m pip --version
 
-    - name: setup sfl
-      run: python sfl_code/setup.py install
+#     - name: setup sfl
+#       run: python sfl_code/setup.py install
 
     - name: freeze
       run: python -m pip freeze
@@ -66,9 +66,12 @@ jobs:
     - name: freeze
       run: python -m pip show sfl
 
+#     - name: import sfl
+#       run: ls -R
+#       working-directory: C:\hostedtoolcache\windows\Python\2.7.18\x64
+
     - name: import sfl
-      run: ls -R
-      working-directory: C:\hostedtoolcache\windows\Python\2.7.18\x64
+      run: python -c "import sfl.sfl"
 
     - name: import sfl
       run: python -c "import sfl"
