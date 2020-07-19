@@ -75,6 +75,27 @@ jobs:
 #       run: ls -R
 #       working-directory: C:\hostedtoolcache\windows\Python\2.7.18\x64
 
+    - name: add all valids to one file
+      shell: python
+      run: |
+          try:
+            import sfl as s1
+          except:
+            print(1)            
+          try:
+            import sfl.sfl as s2
+          except:
+            print(2)
+          try:
+            import sfl.Diagnoser.diagnoserUtils
+          except:
+            print(3)
+          try:
+            import sfl.sfl.Diagnoser.diagnoserUtils
+          except:
+            print(4)
+            
+
     - name: import sfl
       run: python -c "import sfl.sfl"
 
