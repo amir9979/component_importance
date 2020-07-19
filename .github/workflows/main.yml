@@ -71,6 +71,12 @@ jobs:
       working-directory: C:\hostedtoolcache\windows\Python\2.7.18\x64
 
     - name: import sfl
+      run: python -c "import sfl"
+
+    - name: import sfl
+      run: python -c "from sfl import *; print(locals())"
+
+    - name: import sfl
       run: python -c "from sfl.Diagnoser.diagnoserUtils import write_json_planning_file"
 
     - name: execute experiment
