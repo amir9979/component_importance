@@ -66,6 +66,9 @@ jobs:
       run: python -m pip show sfl
 
     - name: import sfl
+      run: python -c "import sfl"
+
+    - name: import sfl
       run: python -c "from sfl.Diagnoser.diagnoserUtils import write_json_planning_file"
 
     - name: execute experiment
