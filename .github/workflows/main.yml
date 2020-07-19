@@ -55,7 +55,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: amir9979/sfl
-        path: .
+        path: ./sfl
         fetch-depth: 0
     
 
@@ -86,6 +86,10 @@ jobs:
             import sfl.sfl as s2
           except:
             print(2)
+          try:
+            import sfl.sfl.sfl as s3
+          except:
+            print(3)
           try:
             import sfl.Diagnoser.diagnoserUtils
           except:
