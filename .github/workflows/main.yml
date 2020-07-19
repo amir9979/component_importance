@@ -98,6 +98,31 @@ jobs:
             import sfl.sfl.Diagnoser.diagnoserUtils
           except:
             print(4)
+      working-directory: ./sfl
+
+    - name: add all valids to one file
+      shell: python
+      run: |
+          try:
+            import sfl as s1
+          except:
+            print(1)            
+          try:
+            import sfl.sfl as s2
+          except:
+            print(2)
+          try:
+            import sfl.sfl.sfl as s3
+          except:
+            print(3)
+          try:
+            import sfl.Diagnoser.diagnoserUtils
+          except:
+            print(3)
+          try:
+            import sfl.sfl.Diagnoser.diagnoserUtils
+          except:
+            print(4)
             
 
     - name: import sfl
