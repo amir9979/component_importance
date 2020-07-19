@@ -45,6 +45,20 @@ jobs:
       with:
         java-version: 1.8
 
+    - name: Checkout sfl
+      uses: actions/checkout@v2
+      with:
+        repository: amir9979/SFL-diagnoser
+        path: ./sfl_diagnoser
+        fetch-depth: 0
+    
+
+    - name: setup sfl
+      run: python sfl_diagnoser/setup.py install
+
+    - name: freeze
+      run: python -m pip freeze
+
     - name: execute experiment
       run: python full_experiment.py ${{github.event.issue.title}}
 
