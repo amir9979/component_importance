@@ -69,7 +69,7 @@ jobs:
 #       run: ls -R
 #       working-directory: C:\hostedtoolcache\windows\Python\2.7.18\x64
 
-    - name: add all valids to one file
+    - name: import sfl
       shell: python
       run: |
           try:
@@ -92,32 +92,13 @@ jobs:
             import sfl.sfl.Diagnoser.diagnoserUtils
           except Exception as e:
             print(e)            
+    
+    - name: execute sfl
+      run: python example.py
       working-directory: ./sfl
 
-    - name: add all valids to one file
-      shell: python
-      run: |
-          try:
-            import sfl as s1
-          except Exception as e:
-            print(e)            
-          try:
-            import sfl.sfl as s2
-          except Exception as e:
-            print(e)            
-          try:
-            import sfl.sfl.sfl as s3
-          except Exception as e:
-            print(e)            
-          try:
-            import sfl.Diagnoser.diagnoserUtils
-          except Exception as e:
-            print(e)            
-          try:
-            import sfl.sfl.Diagnoser.diagnoserUtils
-          except Exception as e:
-            print(e)            
-            
+
+
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
