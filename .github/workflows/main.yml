@@ -19,13 +19,16 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: 2.7
+
+    - name: sfl
+      run: |
+        git submodule init
+        git submodule update
+
     
     - name: Install dependencies
       run: |
@@ -46,25 +49,12 @@ jobs:
         pip install sklearn
         pip install pyswarm
 
-    - name: Set up JDK 1.8
-      uses: actions/setup-java@v1
-      with:
-        java-version: 1.8
-
 #     - name: Checkout sfl
 #       uses: actions/checkout@v2
 #       with:
 #         repository: amir9979/sfl
 #         path: ./sfl
 #         fetch-depth: 0
-    - name: sfl
-      run: |
-        git submodule init
-        git submodule update
-
-
-    - name: setup pip version
-      run: python -m pip --version
 
 #     - name: setup sfl
 #       run: python sfl_code/setup.py install
@@ -84,24 +74,24 @@ jobs:
       run: |
           try:
             import sfl as s1
-          except:
-            print(1)            
+          except Exception as e:
+            print(e)            
           try:
             import sfl.sfl as s2
-          except:
-            print(2)
+          except Exception as e:
+            print(e)            
           try:
             import sfl.sfl.sfl as s3
-          except:
-            print(3)
+          except Exception as e:
+            print(e)            
           try:
             import sfl.Diagnoser.diagnoserUtils
-          except:
-            print(3)
+          except Exception as e:
+            print(e)            
           try:
             import sfl.sfl.Diagnoser.diagnoserUtils
-          except:
-            print(4)
+          except Exception as e:
+            print(e)            
       working-directory: ./sfl
 
     - name: add all valids to one file
@@ -109,37 +99,29 @@ jobs:
       run: |
           try:
             import sfl as s1
-          except:
-            print(1)            
+          except Exception as e:
+            print(e)            
           try:
             import sfl.sfl as s2
-          except:
-            print(2)
+          except Exception as e:
+            print(e)            
           try:
             import sfl.sfl.sfl as s3
-          except:
-            print(3)
+          except Exception as e:
+            print(e)            
           try:
             import sfl.Diagnoser.diagnoserUtils
-          except:
-            print(3)
+          except Exception as e:
+            print(e)            
           try:
             import sfl.sfl.Diagnoser.diagnoserUtils
-          except:
-            print(4)
+          except Exception as e:
+            print(e)            
             
-
-    - name: import sfl
-      run: python -c "import sfl.sfl"
-
-    - name: import sfl
-      run: python -c "import sfl"
-
-    - name: import sfl
-      run: python -c "from sfl import *; print(locals())"
-
-    - name: import sfl
-      run: python -c "from sfl.Diagnoser.diagnoserUtils import write_json_planning_file"
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
 
     - name: execute experiment
       run: python full_experiment.py ${{github.event.issue.title}}
