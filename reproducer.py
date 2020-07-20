@@ -28,7 +28,7 @@ class Reproducer(object):
         self.dir_id = dir_id
         self.surefire_tests = []
         self.tests_to_trace = []
-        self.traces = []
+        self.test_traces = []
         self.optimized_traces = []
         self.bugs = []
         self.failing_tests = failing_tests
@@ -70,23 +70,25 @@ class Reproducer(object):
         with open(self.get_dir_id().mvn_outputs, "w") as f:
             f.write(build_report)
 
-    def trace(self):
+    def trace(self, trace_failed=False):
         repo = Repo(self.get_dir_id().clones)
         DirStructure.mkdir(self.get_dir_id().traces)
-        if self.traces:
+        if self.test_traces:
             return
-        if self.is_marked():
+        if self.is_marked() and False:
             traces = list(JcovParser(self.get_dir_id().traces, short_type=True).parse())
         else:
-            tests_to_run = map(lambda t: ".".join(t.split('.')[:5] + ['*']),self.failing_tests)
-            traces = list(repo.run_under_jcov(self.get_dir_id().traces, False, instrument_only_methods=True, short_type=True, tests_to_run=tests_to_run))
-        self.traces = dict(map(lambda t: (t.test_name, t), traces))
+            tests_to_run = map(lambda t: ".".join(t.split('.')[:5]) + '*', self.failing_tests)
+            tests = tests_to_run if trace_failed else None
+            self.clear()
+            traces = list(repo.run_under_jcov(self.get_dir_id().traces, False, instrument_only_methods=True, short_type=True, tests_to_run=tests, check_comp_error=False))
+        self.test_traces = dict(map(lambda t: (t.test_name, t), traces))
 
     def get_optimized_traces(self):
         self.trace()
         self.extract_tests_to_trace()
-        all_tests = filter(lambda x: x, map(self.traces.get, self.tests_to_trace))
-        fail_tests = filter(lambda test: self.get_surefire_tests()[test.test_name].outcome != 'pass', all_tests)
+        all_tests = filter(lambda x: x, map(self.test_traces.get, self.tests_to_trace))
+        fail_tests = filter(lambda test: self.get_surefire_tests()[test.test_name].outcome in self.get_non_pass_outcomes(), all_tests)
         fail_components = reduce(set.__or__, map(lambda test: set(test.get_trace()), fail_tests), set())
         self.optimized_traces = dict(map(lambda t: (t.test_name, t), filter(lambda test: fail_components & set(test.get_trace()), all_tests)))
 
@@ -94,7 +96,9 @@ class Reproducer(object):
         failing_tests = []
         surefire_tests = self.get_surefire_tests().keys()
         for test in self.failing_tests:
-            surefire_test = filter(lambda t: test.lower() in t, surefire_tests)
+            surefire_test = list(filter(lambda t: test.lower() in t.lower(), surefire_tests))
+            if len(surefire_test) != 1:
+                surefire_test = list(filter(lambda t: test.lower() == t.lower(), surefire_tests))
             if len(surefire_test) != 1:
                 return []
             failing_tests.append(surefire_test[0])
@@ -110,13 +114,16 @@ class Reproducer(object):
         self.tests_to_trace = []
         for test in self.get_surefire_tests():
             add = False
-            if self.get_surefire_tests()[test].outcome != 'pass':
+            if self.get_surefire_tests()[test].outcome in self.get_non_pass_outcomes():
                 add = test in failing_tests
             elif self.get_surefire_tests()[test].outcome == 'pass':
                 add = test not in failing_tests
             if add:
                 self.tests_to_trace.append(test)
         return True
+
+    def get_non_pass_outcomes(self):
+        return ['failure', 'error']
 
     def get_buggy_functions(self, extract_always=False):
         if self.is_marked() and os.path.exists(self.get_dir_id().bugs) and extract_always:
@@ -131,7 +138,7 @@ class Reproducer(object):
         return False
 
     def extract_buggy_functions(self):
-        pass
+        return self.bugged_components
 
     def clear(self):
         # git.Repo(self.get_dir_id().clones).git.checkout('--', '.')

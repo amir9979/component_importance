@@ -133,5 +133,5 @@ if __name__ == "__main__":
     # ExperimentMatrix.experiment_classifiers(DirId(DirStructure(r"C:\amirelm\component_importnace\data\maven_3"), sys.argv[1]))
     # exit()
     ExperimentMatrix.experiment_classifiers(DirId(DirStructure(sys.argv[1]), sys.argv[2]))
-    # Experiment(DirStructure(r"C:\amirelm\component_importnace\data\maven_1")).experiment()
+    # Experiment(DirStructure(r"Z:\component_importance\TIKA")).experiment()
     # pass

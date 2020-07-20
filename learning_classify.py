@@ -153,7 +153,7 @@ class LearningClassify(InfluenceClassify):
                                     needs_proba=True)
         scoring = {x: get_scorer(x) for x in scores_names}
         scoring.update({x.__name__: metrics.make_scorer(x) for x in metrics_functions})
-        scoring["pr_auc"] = pr_auc_scorer
+        # scoring["pr_auc"] = pr_auc_scorer
 
         def tn(y_true, y_pred): return metrics.confusion_matrix(y_true, y_pred)[0, 0]
 
@@ -197,14 +197,14 @@ class LearningClassify(InfluenceClassify):
                         'fp': metrics.make_scorer(fp), 'fn': metrics.make_scorer(fn)})
 
         scoring.update({"cost_{0}_{1}".format(*x): metrics.make_scorer(cost, fp_cost=x[0], fn_cost=x[1]) for x in product(range(1,4), range(1,4))})
-        scoring.update({"mse_cost_{0}_{1}".format(*x): metrics.make_scorer(mse_cost, fp_cost=x[0], fn_cost=x[1], needs_proba=True) for x in
-                        product(range(1, 4), range(1, 4))})
+        # scoring.update({"mse_cost_{0}_{1}".format(*x): metrics.make_scorer(mse_cost, fp_cost=x[0], fn_cost=x[1], needs_proba=True) for x in
+        #                 product(range(1, 4), range(1, 4))})
 
-        scoring.update({"mse1_cost_{0}_{1}".format(*x): metrics.make_scorer(mse_cost1, fp_cost=x[0], fn_cost=x[1], needs_proba=True) for x in
-                        product(range(1, 4), range(1, 4))})
-
-        scoring["mse"] = metrics.make_scorer(mse, needs_proba=True)
-        scoring["mse1"] = metrics.make_scorer(mse1, needs_proba=True)
+        # scoring.update({"mse1_cost_{0}_{1}".format(*x): metrics.make_scorer(mse_cost1, fp_cost=x[0], fn_cost=x[1], needs_proba=True) for x in
+        #                 product(range(1, 4), range(1, 4))})
+        #
+        # scoring["mse"] = metrics.make_scorer(mse, needs_proba=True)
+        # scoring["mse1"] = metrics.make_scorer(mse1, needs_proba=True)
         scores = cross_validate(self.get_classifier(), self.get_training_featues(), self.get_training_labels(), cv=3, scoring=scoring, return_train_score=True)
         all_scores = dict()
         for score in scores:
