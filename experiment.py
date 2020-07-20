@@ -5,9 +5,9 @@ import os
 import csv
 import copy
 import sys
-from sfl_diagnoser.Diagnoser.diagnoserUtils import write_json_planning_file, read_json_planning_instance, read_json_planning_file
-from sfl_diagnoser.Diagnoser.Experiment_Data import Experiment_Data
-from sfl_diagnoser.Diagnoser.Diagnosis_Results import Diagnosis_Results
+from sfl.Diagnoser.diagnoserUtils import write_json_planning_file, read_json_planning_instance, read_json_planning_file
+from sfl.Diagnoser.Experiment_Data import Experiment_Data
+from sfl.Diagnoser.Diagnosis_Results import Diagnosis_Results
 from operator import itemgetter
 from numpy import mean
 

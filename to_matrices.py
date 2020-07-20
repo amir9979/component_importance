@@ -1,6 +1,6 @@
 import os
 import json
-from sfl_diagnoser.Diagnoser.diagnoserUtils import readPlanningFile, write_planning_file
+from sfl.Diagnoser.diagnoserUtils import readPlanningFile, write_planning_file
 
 # obs = ["0aa57f04ede369a4f813bbb86d3eac1ed20b084c", "0cc451d5e5cb565eb7311308466f487bc534ebaf",
 #        "19f33e4e0d824e732d07f06a08567c27b3c808f3", "1c606c3d96838e595a0664cbafdd60caae34aa0e",
