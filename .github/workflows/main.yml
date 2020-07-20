@@ -57,6 +57,9 @@ jobs:
             print(e)            
     
     - name: execute sfl
+      run: python  -c "import sfl;print(sfl)"
+
+    - name: execute sfl
       run: python example.py
       working-directory: ./sfl
 
