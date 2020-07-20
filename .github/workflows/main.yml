@@ -29,6 +29,42 @@ jobs:
         git submodule init
         git submodule update
 
+    - name: ls
+      run: ls -R
+
+    - name: import sfl
+      shell: python
+      run: |
+          try:
+            import sfl as s1
+          except Exception as e:
+            print(e)            
+          try:
+            import sfl.sfl as s2
+          except Exception as e:
+            print(e)            
+          try:
+            import sfl.sfl.sfl as s3
+          except Exception as e:
+            print(e)            
+          try:
+            import sfl.Diagnoser.diagnoserUtils
+          except Exception as e:
+            print(e)            
+          try:
+            import sfl.sfl.Diagnoser.diagnoserUtils
+          except Exception as e:
+            print(e)            
+    
+#     - name: execute sfl
+#       run: python  -c "import sfl;print(sfl)"
+
+#     - name: execute sfl
+#       run: python example.py
+#       working-directory: ./sfl
+
+#     - name: execute sfl
+#       run: python ./sfl/example.py
     
     - name: Install dependencies
       run: |
@@ -68,37 +104,6 @@ jobs:
 #     - name: import sfl
 #       run: ls -R
 #       working-directory: C:\hostedtoolcache\windows\Python\2.7.18\x64
-
-    - name: import sfl
-      shell: python
-      run: |
-          try:
-            import sfl as s1
-          except Exception as e:
-            print(e)            
-          try:
-            import sfl.sfl as s2
-          except Exception as e:
-            print(e)            
-          try:
-            import sfl.sfl.sfl as s3
-          except Exception as e:
-            print(e)            
-          try:
-            import sfl.Diagnoser.diagnoserUtils
-          except Exception as e:
-            print(e)            
-          try:
-            import sfl.sfl.Diagnoser.diagnoserUtils
-          except Exception as e:
-            print(e)            
-    
-    - name: execute sfl
-      run: python example.py
-      working-directory: ./sfl
-
-    - name: execute sfl
-      run: python ./sfl/example.py
 
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
