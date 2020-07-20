@@ -1,0 +1,157 @@
+# This is a basic workflow to help you get started with Actions
+
+name: miner_experiment
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  issues:
+    types: [opened]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: windows-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 2.7
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install setuptools -U
+        pip install pytest 
+        pip install gitpython
+        pip install jira
+        pip install termcolor 
+        pip install openpyxl  
+        pip install javalang
+        pip install enum 
+        pip install pathlib
+        pip install junitparser
+        pip install pandas
+        pip install numpy
+        pip install scipy
+        pip install sklearn
+        pip install pyswarm
+
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+
+    - name: Checkout sfl
+      uses: actions/checkout@v2
+      with:
+        repository: amir9979/sfl
+        path: ./sfl
+        fetch-depth: 0
+    
+
+    - name: setup pip version
+      run: python -m pip --version
+
+#     - name: setup sfl
+#       run: python sfl_code/setup.py install
+
+#     - name: freeze
+#       run: python -m pip freeze
+
+#     - name: freeze
+#       run: python -m pip show sfl
+
+#     - name: import sfl
+#       run: ls -R
+#       working-directory: C:\hostedtoolcache\windows\Python\2.7.18\x64
+
+    - name: add all valids to one file
+      shell: python
+      run: |
+          try:
+            import sfl as s1
+          except:
+            print(1)            
+          try:
+            import sfl.sfl as s2
+          except:
+            print(2)
+          try:
+            import sfl.sfl.sfl as s3
+          except:
+            print(3)
+          try:
+            import sfl.Diagnoser.diagnoserUtils
+          except:
+            print(3)
+          try:
+            import sfl.sfl.Diagnoser.diagnoserUtils
+          except:
+            print(4)
+      working-directory: ./sfl
+
+    - name: add all valids to one file
+      shell: python
+      run: |
+          try:
+            import sfl as s1
+          except:
+            print(1)            
+          try:
+            import sfl.sfl as s2
+          except:
+            print(2)
+          try:
+            import sfl.sfl.sfl as s3
+          except:
+            print(3)
+          try:
+            import sfl.Diagnoser.diagnoserUtils
+          except:
+            print(3)
+          try:
+            import sfl.sfl.Diagnoser.diagnoserUtils
+          except:
+            print(4)
+            
+
+    - name: import sfl
+      run: python -c "import sfl.sfl"
+
+    - name: import sfl
+      run: python -c "import sfl"
+
+    - name: import sfl
+      run: python -c "from sfl import *; print(locals())"
+
+    - name: import sfl
+      run: python -c "from sfl.Diagnoser.diagnoserUtils import write_json_planning_file"
+
+    - name: execute experiment
+      run: python full_experiment.py ${{github.event.issue.title}}
+
+    - name: Upload data
+      uses: actions/upload-artifact@v2
+      with:
+        # Artifact name
+        name: data
+        # A file, directory or wildcard pattern that describes what to upload
+        path: ./component_importance_data
+
+
+    - name: Close Issue
+      continue-on-error: true
+      uses: peter-evans/close-issue@v1
+      with:
+        comment: |
+          The issue you have reported seems to be resolved now.
