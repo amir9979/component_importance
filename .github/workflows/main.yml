@@ -56,15 +56,15 @@ jobs:
           except Exception as e:
             print(e)            
     
-    - name: execute sfl
-      run: python  -c "import sfl;print(sfl)"
+#     - name: execute sfl
+#       run: python  -c "import sfl;print(sfl)"
 
-    - name: execute sfl
-      run: python example.py
-      working-directory: ./sfl
+#     - name: execute sfl
+#       run: python example.py
+#       working-directory: ./sfl
 
-    - name: execute sfl
-      run: python ./sfl/example.py
+#     - name: execute sfl
+#       run: python ./sfl/example.py
     
     - name: Install dependencies
       run: |
