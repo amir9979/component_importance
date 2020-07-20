@@ -9,8 +9,7 @@ import os
 from multiprocessing import Pool, Manager
 from subprocess import Popen
 from functools import partial
-
-DIR_BASE_PATH = r"Z:\component_importance"
+DIR_BASE_PATH = r"component_importance_data"
 NUM_PROCCESSES = 1
 
 def run_process(cmd_args):
@@ -38,7 +37,6 @@ def experiment_execute(project, dir_path):
 def execute(func, iter, num_processes=NUM_PROCCESSES):
     p = Pool(num_processes)
     p.map(func, iter)
-    # p.join()
     p.close()
 
 
