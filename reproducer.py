@@ -16,7 +16,11 @@ except:
     from jcov_parser import JcovParser
 import sys
 from feature_extraction import FeatureExtraction
-from javadiff.SourceFile import SourceFile
+try:
+    from javadiff.SourceFile import SourceFile
+except:
+    from javadiff.javadiff.SourceFile import SourceFile
+
 
 
 class Reproducer(object):
