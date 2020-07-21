@@ -1,3 +1,6 @@
 [submodule "sfl"]
 	path = sfl
 	url = https://github.com/amir9979/sfl.git
+[submodule "mvnpy"]
+	path = mvnpy
+	url = https://github.com/rotba/mvnpy.git
