@@ -29,32 +29,12 @@ jobs:
         git submodule init
         git submodule update
 
-    - name: ls
-      run: ls -R
-
-    - name: import sfl
-      shell: python
-      run: |
-          try:
-            import sfl as s1
-          except Exception as e:
-            print(e)            
-          try:
-            import sfl.sfl as s2
-          except Exception as e:
-            print(e)            
-          try:
-            import sfl.sfl.sfl as s3
-          except Exception as e:
-            print(e)            
-          try:
-            import sfl.Diagnoser.diagnoserUtils
-          except Exception as e:
-            print(e)            
-          try:
-            import sfl.sfl.Diagnoser.diagnoserUtils
-          except Exception as e:
-            print(e)            
+    - name: Checkout javadiff
+      uses: actions/checkout@v2
+      with:
+        repository: amir9979/javadiff
+        path: ./javadiff
+        fetch-depth: 0
     
 #     - name: execute sfl
 #       run: python  -c "import sfl;print(sfl)"
