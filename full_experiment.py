@@ -44,7 +44,7 @@ def full_experiment(bug_miner_project_name, dir_base_path=DIR_BASE_PATH, num_pro
     dir_path = os.path.join(dir_base_path, bug_miner_project_name)
     projects = BugMinerReproducer.read_bug_miner_csv(dir_path, bug_miner_project_name)
     git_path, jira_path = list(filter(lambda x: os.path.basename(x[1]) == bug_miner_project_name, projects_names.values()))[0]
-    os.system("git clone {0} repo".format(git_path))
+    os.system("git clone {0} repo\\{1}".format(git_path, bug_miner_project_name))
     execute(partial(exec_do_all, dir_path=dir_path, project_name=bug_miner_project_name), projects.keys(), num_processes)
     execute(partial(exec_training_set, dir_path=dir_path, project_name=bug_miner_project_name), projects.keys(), num_processes)
     execute(partial(exec_experiment, dir_path=dir_path), projects.keys(), num_processes)

@@ -13,7 +13,7 @@ import pandas as pd
 
 class BugMinerReproducer(Reproducer):
     BUG_MINER_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), r"bug_miner"))
-    BUG_MINER_REPOS_DIR = os.path.realpath(r"repo")
+    BUG_MINER_REPOS_DIR = os.path.realpath(r"repos")
 
     def __init__(self, id, failing_tests, dir_id, repo_path, diffs, blamed_components, fix):
         super(BugMinerReproducer, self).__init__(id, map(lambda t: t.replace("#", "."), failing_tests), dir_id)
