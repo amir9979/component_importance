@@ -9,7 +9,7 @@ except:
 from subprocess import Popen
 from dir_structure import DirStructure, DirId
 import networkx
-from sfl.Diagnoser.diagnoserUtils import write_json_planning_file, read_json_planning_file
+from sfl.sfl.Diagnoser.diagnoserUtils import write_json_planning_file, read_json_planning_file
 try:
     from mvnpy.jcov_parser import JcovParser
 except:
