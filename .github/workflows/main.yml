@@ -64,6 +64,7 @@ jobs:
         pip install scipy
         pip install sklearn
         pip install pyswarm
+        pip install networkx
 
 #     - name: Checkout sfl
 #       uses: actions/checkout@v2
