@@ -220,8 +220,11 @@ class Reproducer(object):
         repo = git.Repo(self.get_dir_id().clones)
         files_functions = {}
         for file_name in filter(lambda f: sources_path in f or test_sources_path in f, repo.git.ls_files().split('\n')):
-            with open(os.path.join(self.get_dir_id().clones, file_name)) as f:
-                map(lambda m: files_functions.setdefault(m.id.split("@")[1].lower().replace(',', ';'), file_name), SourceFile(f.read(), file_name).methods.values())
+            try:
+                with open(os.path.join(self.get_dir_id().clones, file_name)) as f:
+                    map(lambda m: files_functions.setdefault(m.id.split("@")[1].lower().replace(',', ';'), file_name), SourceFile(f.read(), file_name).methods.values())
+            except:
+                pass
         with open(self.get_dir_id().files_functions, "wb") as f:
             json.dump(files_functions, f)
 
