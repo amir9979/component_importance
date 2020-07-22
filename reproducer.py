@@ -81,7 +81,6 @@ class Reproducer(object):
             return
         if self.is_marked() and False:
             traces = list(JcovParser(self.get_dir_id().traces, short_type=True).parse())
-            print(traces)
         else:
             tests_to_run = map(lambda t: ".".join(t.split('.')[:5]) + '*', self.failing_tests)
             tests = tests_to_run if trace_failed else None
@@ -114,15 +113,13 @@ class Reproducer(object):
         failing_tests = self.get_failing_tests_as_surefire_tests()
         if not failing_tests:
             raise Exception("no failed tests")
-        # if 'pass' in map(lambda test: self.get_surefire_tests()[test].outcome, failing_tests):
-        #     raise Exception("failed tests passed")
         self.tests_to_trace = []
         for test in self.get_surefire_tests():
             add = False
             if self.get_surefire_tests()[test].outcome in self.get_non_pass_outcomes():
                 add = test in failing_tests
             elif self.get_surefire_tests()[test].outcome == 'pass':
-                add = test not in failing_tests
+                add = True
             if add:
                 self.tests_to_trace.append(test)
         return True
