@@ -114,12 +114,13 @@ class Reproducer(object):
         if not failing_tests:
             raise Exception("no failed tests")
         self.tests_to_trace = []
+        print("self.get_surefire_tests()", self.get_surefire_tests())
         for test in self.get_surefire_tests():
             add = False
             if self.get_surefire_tests()[test].outcome in self.get_non_pass_outcomes():
                 add = test in failing_tests
             elif self.get_surefire_tests()[test].outcome == 'pass':
-                add = True
+                add = test not in failing_tests
             if add:
                 self.tests_to_trace.append(test)
         return True
@@ -176,8 +177,7 @@ class Reproducer(object):
             self.get_buggy_functions(True)
             tests_details = []
             bugs = map(lambda b: b.replace(',', ';'), self.bugs)
-            print(self.tests_to_trace)
-            print(self.optimized_traces)
+            print("optimized_traces", self.optimized_traces)
             for test in self.optimized_traces.values():
                 nice_trace = list(set(map(
                     lambda t: t.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""),
