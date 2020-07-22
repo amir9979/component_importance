@@ -96,6 +96,8 @@ jobs:
       run: python full_experiment.py ${{github.event.issue.title}}
 
     - name: Upload data
+      if: ${{ always() }}
+      continue-on-error: true
       uses: actions/upload-artifact@v2
       with:
         # Artifact name
