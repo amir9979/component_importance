@@ -11,6 +11,7 @@ import tempfile
 from ast import literal_eval
 import pandas as pd
 
+
 class BugMinerReproducer(Reproducer):
     BUG_MINER_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), r"bug_miner"))
     BUG_MINER_REPOS_DIR = os.path.realpath(r"repos")
