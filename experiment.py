@@ -103,7 +103,6 @@ class ExperimentMatrix(object):
                 json_matrix = json.loads(f.read())
             for alpha in ExperimentMatrix.ALPHA_RANGE:
                 for matrix_name, influence_data in self.generate_influence_data(alpha):
-                    print alpha, matrix_name
                     matrix = copy.deepcopy(json_matrix)
                     matrix.update(influence_data)
                     with open(os.path.join(self.dir_id.experiment_matrices, matrix_name + str(alpha)), "wb") as f:
@@ -132,6 +131,9 @@ class ExperimentMatrix(object):
 if __name__ == "__main__":
     # ExperimentMatrix.experiment_classifiers(DirId(DirStructure(r"C:\amirelm\component_importnace\data\maven_3"), sys.argv[1]))
     # exit()
-    ExperimentMatrix.experiment_classifiers(DirId(DirStructure(sys.argv[1]), sys.argv[2]))
+    try:
+        ExperimentMatrix.experiment_classifiers(DirId(DirStructure(sys.argv[1]), sys.argv[2]))
+    except:
+        pass
     # Experiment(DirStructure(r"Z:\component_importance\TIKA")).experiment()
     # pass
