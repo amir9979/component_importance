@@ -160,7 +160,7 @@ class Reproducer(object):
         self.clear()
         self.apply_patch()
         if not self.get_buggy_functions():
-            return
+            raise Exception("get_buggy_functions")
         self.fix()
         self.clean_execution()
         if self.extract_tests_to_trace():
