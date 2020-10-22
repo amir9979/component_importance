@@ -79,8 +79,8 @@ class Reproducer(object):
         DirStructure.mkdir(self.get_dir_id().traces)
         if self.test_traces:
             return
-        if self.is_marked() and False:
-            traces = list(JcovParser(self.get_dir_id().traces, short_type=True).parse())
+        if self.is_marked():
+            traces = list(JcovParser(self.get_dir_id().traces, True, True).parse(False))
         else:
             tests_to_run = map(lambda t: ".".join(t.split('.')[:5]) + '*', self.failing_tests)
             tests = tests_to_run if trace_failed else None
@@ -90,7 +90,6 @@ class Reproducer(object):
 
     def get_optimized_traces(self):
         self.trace()
-        self.extract_tests_to_trace()
         all_tests = filter(lambda x: x, map(self.test_traces.get, self.tests_to_trace))
         fail_tests = filter(lambda test: self.get_surefire_tests()[test.test_name].outcome in self.get_non_pass_outcomes(), all_tests)
         fail_components = reduce(set.__or__, map(lambda test: set(test.get_trace()), fail_tests), set())
@@ -122,7 +121,9 @@ class Reproducer(object):
                 add = test not in failing_tests
             if add:
                 self.tests_to_trace.append(test)
-        return True
+        if self.tests_to_trace:
+            return True
+        raise Exception("no tests to trace")
 
     def get_non_pass_outcomes(self):
         return ['failure', 'error']
@@ -159,7 +160,7 @@ class Reproducer(object):
         self.clone()
         self.clear()
         self.apply_patch()
-        if not self.get_buggy_functions():
+        if not self.get_buggy_functions(True):
             return
         self.fix()
         self.clean_execution()
@@ -167,6 +168,7 @@ class Reproducer(object):
             self.trace()
             if self.extract_tests_to_trace():
                 self.mark()
+                self.get_optimized_traces()
                 self.save_as_sfl_matrix()
                 self.save_tests_results()
 
