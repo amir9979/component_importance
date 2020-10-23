@@ -9,7 +9,7 @@ class DirStructure(object):
     RESULTS = ["experiment", "classification_evaluate"]
 
     def __init__(self, base_path):
-        self.base_path = base_path
+        self.base_path = os.path.abspath(base_path)
         for dir in DirStructure.DIRS:
             setattr(self, dir, DirStructure.mkdir(os.path.join(self.base_path, dir)))
         for dir in DirStructure.RESULTS:
