@@ -173,19 +173,18 @@ class Reproducer(object):
                 self.save_tests_results()
 
     def save_as_sfl_matrix(self):
-        if self.is_marked():
-            self.get_optimized_traces()
-            self.get_buggy_functions(True)
-            tests_details = []
-            bugs = map(lambda b: b.replace(',', ';'), self.bugs)
-            for test in self.optimized_traces.values():
-                nice_trace = list(set(map(
-                    lambda t: t.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""),
-                    test.get_trace())))
-                if test.test_name + "()" in nice_trace:
-                    nice_trace.remove(test.test_name + "()")
-                tests_details.append((test.test_name, nice_trace, 0 if self.get_surefire_tests()[test.test_name].outcome == 'pass' else 1))
-            write_json_planning_file(self.get_dir_id().matrices, tests_details, bugs)
+        self.get_optimized_traces()
+        self.get_buggy_functions(True)
+        tests_details = []
+        bugs = map(lambda b: b.replace(',', ';'), self.bugs)
+        for test in self.optimized_traces.values():
+            nice_trace = list(set(map(
+                lambda t: t.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""),
+                test.get_trace())))
+            if test.test_name + "()" in nice_trace:
+                nice_trace.remove(test.test_name + "()")
+            tests_details.append((test.test_name, nice_trace, 0 if self.get_surefire_tests()[test.test_name].outcome == 'pass' else 1))
+        write_json_planning_file(self.get_dir_id().matrices, tests_details, bugs)
 
     def get_files_packages(self):
         sources_path = r'src/main/java'
@@ -243,8 +242,6 @@ class Reproducer(object):
             networkx.write_gexf(g, os.path.join(self.get_dir_id().call_graphs, trace + ".gexf"))
 
     def data_extraction(self):
-        if not self.is_marked():
-            return
         self.get_optimized_traces()
         self.call_graph()
         self.execution_graph()
@@ -270,31 +267,28 @@ class Reproducer(object):
             json.dump(labels, f)
 
     def save_traces(self):
-        if self.is_marked():
-            self.get_optimized_traces()
-            traces = dict()
-            for test in self.optimized_traces.values():
-                nice_trace = list(set(map(
-                    lambda t: t.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""),
-                    test.get_trace())))
-                traces[test.test_name] = nice_trace
-                if test.test_name + "()" in nice_trace:
-                    nice_trace.remove(test.test_name + "()")
-            with open(self.get_dir_id().traces_json, "wb") as f:
-                json.dump(traces, f)
+        self.get_optimized_traces()
+        traces = dict()
+        for test in self.optimized_traces.values():
+            nice_trace = list(set(map(
+                lambda t: t.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""),
+                test.get_trace())))
+            traces[test.test_name] = nice_trace
+            if test.test_name + "()" in nice_trace:
+                nice_trace.remove(test.test_name + "()")
+        with open(self.get_dir_id().traces_json, "wb") as f:
+            json.dump(traces, f)
 
     def save_tests_results(self):
-        if self.is_marked():
-            self.get_optimized_traces()
-            data = dict(map(lambda t: (t, self.get_surefire_tests()[t].outcome == 'pass'), self.optimized_traces))
-            with open(self.get_dir_id().tests_results, "wb") as f:
-                json.dump(data, f)
+        self.get_optimized_traces()
+        data = dict(map(lambda t: (t, self.get_surefire_tests()[t].outcome == 'pass'), self.optimized_traces))
+        with open(self.get_dir_id().tests_results, "wb") as f:
+            json.dump(data, f)
 
     def do_all(self):
         self.dump()
         self.data_extraction()
-        if self.is_marked():
-            FeatureExtraction(self.get_dir_id()).extract()
+        FeatureExtraction(self.get_dir_id()).extract()
 
     def get_training_set(self):
         FeatureExtraction(self.get_dir_id()).get_training_set()
