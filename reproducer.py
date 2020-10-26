@@ -79,7 +79,8 @@ class Reproducer(object):
         DirStructure.mkdir(self.get_dir_id().traces)
         if self.test_traces:
             return
-        if self.is_marked():
+        if os.listdir(self.get_dir_id().traces) > 1:
+            # bugger than 1 because the default is result.xml
             traces = list(JcovParser(self.get_dir_id().traces, True, True).parse(False))
         else:
             tests_to_run = map(lambda t: ".".join(t.split('.')[:5]) + '*', self.failing_tests)
