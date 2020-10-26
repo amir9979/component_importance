@@ -79,18 +79,13 @@ class Reproducer(object):
         DirStructure.mkdir(self.get_dir_id().traces)
         if self.test_traces:
             return
-        if os.listdir(self.get_dir_id().traces) > 1:
-            # bugger than 1 because the default is result.xml
-            traces = list(JcovParser(self.get_dir_id().traces, True, True).parse(False))
-        else:
-            tests_to_run = map(lambda t: ".".join(t.split('.')[:5]) + '*', self.failing_tests)
-            tests = tests_to_run if trace_failed else None
-            self.clear()
-            traces = list(repo.run_under_jcov(self.get_dir_id().traces, False, instrument_only_methods=True, short_type=True, tests_to_run=tests, check_comp_error=False))
+        tests_to_run = map(lambda t: ".".join(t.split('.')[:5]) + '*', self.failing_tests)
+        tests = tests_to_run if trace_failed else None
+        self.clear()
+        traces = list(repo.run_under_jcov(self.get_dir_id().traces, False, instrument_only_methods=True, short_type=True, tests_to_run=tests, check_comp_error=False))
         self.test_traces = dict(map(lambda t: (t.test_name, t), traces))
 
     def get_optimized_traces(self):
-        self.trace()
         all_tests = filter(lambda x: x, map(self.test_traces.get, self.tests_to_trace))
         fail_tests = filter(lambda test: self.get_surefire_tests()[test.test_name].outcome in self.get_non_pass_outcomes(), all_tests)
         fail_components = reduce(set.__or__, map(lambda test: set(test.get_trace()), fail_tests), set())
