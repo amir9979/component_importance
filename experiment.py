@@ -47,18 +47,21 @@ class Experiment(object):
     def classification_evaluate(self):
         def dir_classifiers(dir_name):
             return dict(map(lambda x: (x, json.load(open(os.path.join(dir_name, x)))), os.listdir(dir_name)))
-        dirs = map(lambda x: os.path.join(self.dir_structure.classification_metrics, x), os.listdir(self.dir_structure.classification_metrics))
-        a = map(dir_classifiers, dirs)
-        metrics = sorted(a[0].values()[0].keys())
-        classifiers_data = dict(
-            map(lambda k: (k, reduce(list.__add__, map(lambda res: res.get(k, {}).items(), a), [])), a[0].keys()))
-        classifiers_evaluation = dict(map(lambda d: (d, dict(map(lambda metric: (metric, mean(map(itemgetter(1), filter(lambda x: metric==x[0], classifiers_data[d])))), metrics))), classifiers_data))
-        results = [["classifier_name"] + metrics]
-        for classifier_name in classifiers_evaluation:
-            results_row = [classifier_name] + map(lambda h: classifiers_evaluation[classifier_name][h], metrics)
-            results.append(results_row)
-        with open(self.dir_structure.classification_evaluate, "wb") as f:
-            csv.writer(f).writerows(results)
+        dirs = list(map(lambda x: os.path.join(self.dir_structure.classification_metrics, x), os.listdir(self.dir_structure.classification_metrics)))
+        a = list(map(dir_classifiers, dirs))
+        try:
+            metrics = sorted(a[0].values()[0].keys())
+            classifiers_data = dict(
+                map(lambda k: (k, reduce(list.__add__, map(lambda res: res.get(k, {}).items(), a), [])), a[0].keys()))
+            classifiers_evaluation = dict(map(lambda d: (d, dict(map(lambda metric: (metric, mean(map(itemgetter(1), filter(lambda x: metric==x[0], classifiers_data[d])))), metrics))), classifiers_data))
+            results = [["classifier_name"] + metrics]
+            for classifier_name in classifiers_evaluation:
+                results_row = [classifier_name] + map(lambda h: classifiers_evaluation[classifier_name][h], metrics)
+                results.append(results_row)
+            with open(self.dir_structure.classification_evaluate, "wb") as f:
+                csv.writer(f).writerows(results)
+        except:
+            pass
 
 
 class ExperimentMatrix(object):
