@@ -42,7 +42,7 @@ with open(r"C:\amirelm\component_importnace\data\d4j_lang\training_graph.json", 
 	json.dump(instances, f)
 	
 keys = sorted(instances[0].keys())
-lines = map(lambda i: map(lambda k: i[k],keys), instances)
+lines = list(map(lambda i: list(map(lambda k: i[k], keys)), instances))
 with open(r"C:\amirelm\component_importnace\data\d4j_lang\training_graph.csv", "wb") as f:
 	csv.writer(f).writerows([keys] + lines)
 

@@ -14,7 +14,7 @@ class ExperimentResults(object):
 
     def results(self, num_procesess=10):
         # map(lambda id: FeatureExtraction(DirId(self.dir_structure, id)).get_training_set(), self.ids)
-        main_cmds(num_procesess, map(lambda x: [sys.executable, "experiment.py", self.dir_name, x], self.ids))
+        main_cmds(num_procesess, list(map(lambda x: [sys.executable, "experiment.py", self.dir_name, x], self.ids)))
         Experiment(self.dir_structure).experiment()
 
 

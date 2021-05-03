@@ -52,7 +52,7 @@ class LearningClassify(InfluenceClassify):
         probabilities_index = LearningClassify.PROBABILITY[prediction_probabilities[0][0] >= 0.5][prediction[0]]
         self.influence_dict = {}
         for test_id, probability in zip(self.get_test_ids(),
-                                        map(itemgetter(probabilities_index), prediction_probabilities)):
+                                        list(map(itemgetter(probabilities_index), prediction_probabilities))):
             test_name, function_name = test_id
             self.influence_dict.setdefault(test_name, dict()).setdefault(function_name, probability)
 
@@ -180,18 +180,18 @@ class LearningClassify(InfluenceClassify):
             return mean(squares)
 
         def mse(y_true, y_pred):
-            return min(metrics.mean_squared_error([1 if x else 0 for x in y_true], map(lambda x: x[0][1 if x[1] else 0], zip(y_pred, y_true))), metrics.mean_squared_error([1 if x else 0 for x in y_true], map(lambda x: x[0][0 if x[1] else 1], zip(y_pred, y_true))))
+            return min(metrics.mean_squared_error([1 if x else 0 for x in y_true], list(map(lambda x: x[0][1 if x[1] else 0], zip(y_pred, y_true)))), metrics.mean_squared_error([1 if x else 0 for x in y_true], list(map(lambda x: x[0][0 if x[1] else 1], zip(y_pred, y_true)))))
 
         def mse_cost(y_true, y_pred, fp_cost=1, fn_cost=1):
-            return min(mean_squared_error_cost([1 if x else 0 for x in y_true], map(lambda x: x[0][1 if x[1] else 0], zip(y_pred, y_true)), fp_cost=fp_cost, fn_cost=fn_cost),
-                       mean_squared_error_cost([1 if x else 0 for x in y_true], map(lambda x: x[0][0 if x[1] else 1], zip(y_pred, y_true)), fp_cost=fp_cost, fn_cost=fn_cost))
+            return min(mean_squared_error_cost([1 if x else 0 for x in y_true], list(map(lambda x: x[0][1 if x[1] else 0], zip(y_pred, y_true))), fp_cost=fp_cost, fn_cost=fn_cost),
+                       mean_squared_error_cost([1 if x else 0 for x in y_true], list(map(lambda x: x[0][0 if x[1] else 1], zip(y_pred, y_true))), fp_cost=fp_cost, fn_cost=fn_cost))
 
         def mse1(y_true, y_pred):
-            return max(metrics.mean_squared_error([1 if x else 0 for x in y_true], map(lambda x: x[0][1 if x[1] else 0], zip(y_pred, y_true))), metrics.mean_squared_error([1 if x else 0 for x in y_true], map(lambda x: x[0][0 if x[1] else 1], zip(y_pred, y_true))))
+            return max(metrics.mean_squared_error([1 if x else 0 for x in y_true], list(map(lambda x: x[0][1 if x[1] else 0], zip(y_pred, y_true)))), metrics.mean_squared_error([1 if x else 0 for x in y_true], list(map(lambda x: x[0][0 if x[1] else 1], zip(y_pred, y_true)))))
 
         def mse_cost1(y_true, y_pred, fp_cost=1, fn_cost=1):
-            return max(mean_squared_error_cost([1 if x else 0 for x in y_true], map(lambda x: x[0][1 if x[1] else 0], zip(y_pred, y_true)), fp_cost=fp_cost, fn_cost=fn_cost),
-                       mean_squared_error_cost([1 if x else 0 for x in y_true], map(lambda x: x[0][0 if x[1] else 1], zip(y_pred, y_true)), fp_cost=fp_cost, fn_cost=fn_cost))
+            return max(mean_squared_error_cost([1 if x else 0 for x in y_true], list(map(lambda x: x[0][1 if x[1] else 0], zip(y_pred, y_true))), fp_cost=fp_cost, fn_cost=fn_cost),
+                       mean_squared_error_cost([1 if x else 0 for x in y_true], list(map(lambda x: x[0][0 if x[1] else 1], zip(y_pred, y_true))), fp_cost=fp_cost, fn_cost=fn_cost))
 
         scoring.update({'tp': metrics.make_scorer(tp), 'tn': metrics.make_scorer(tn),
                         'fp': metrics.make_scorer(fp), 'fn': metrics.make_scorer(fn)})

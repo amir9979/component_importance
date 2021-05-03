@@ -25,15 +25,15 @@ class BugDotJar(Reproducer):
     def extract_buggy_functions(self):
         repo = git.Repo(self.get_dir_id().clones)
         repo.git.apply(os.path.join(self.get_dir_id().clones, ".bugs-dot-jar", "developer-patch.diff"))
-        buggy = map(lambda x: x.split("@")[1].lower().replace(',', ';'),
-                   javadiff.diff.get_modified_functions(self.get_dir_id().clones))
+        buggy = list(map(lambda x: x.split("@")[1].lower().replace(',', ';'),
+                   javadiff.diff.get_modified_functions(self.get_dir_id().clones)))
         repo.git.checkout('-f', '--', '.', )
         return buggy
 
     def clone(self):
         Popen(['git', 'clone', self.get_repo(), self.get_dir_id().clones]).wait()
         git_repo = git.Repo(self.get_dir_id().clones)
-        branches = filter(lambda x: self.commit in x, map(lambda x: x.split('/')[-1], git_repo.git.branch('-a').split('\n')))
+        branches = list(filter(lambda x: self.commit in x, list(map(lambda x: x.split('/')[-1], git_repo.git.branch('-a').split('\n')))))
         assert len(branches) == 1
         Popen(['git', '-C', self.get_dir_id().clones, "checkout", branches[0]]).wait()
 
@@ -41,7 +41,7 @@ class BugDotJar(Reproducer):
         for root, dirs, files in os.walk(self.get_repo()):
             for file_name in filter(lambda x: x.endswith('.sh'), files):
                 with open(file_name) as f:
-                    lines = map(lambda x: x.replace('\r', ''), f.readlines())
+                    lines = list(map(lambda x: x.replace('\r', ''), f.readlines()))
                 with open(file_name, "wb") as f:
                     f.writelines(lines)
 
@@ -59,7 +59,7 @@ class BugDotJar(Reproducer):
         projects = []
         for bug in bugs:
             commit = bug['commit']
-            failing_tests = map(lambda f: ".".join(list(reversed(f.split()[0].split(':')[0].replace(')', '').replace('#', '.').split('(')))).lower(), bug['failing_tests'])
+            failing_tests = list(map(lambda f: ".".join(list(reversed(f.split()[0].split(':')[0].replace(')', '').replace('#', '.').split('(')))).lower(), bug['failing_tests']))
             projects.append(BugDotJar(id, failing_tests, DirId(DirStructure(dir_path), bug['jira_id'] + "_" + commit), commit, project))
         return projects
 

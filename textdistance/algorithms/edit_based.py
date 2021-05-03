@@ -352,10 +352,10 @@ class NeedlemanWunsch(_BaseSimilarity):
         self.external = external
 
     def minimum(self, *sequences):
-        return - max(map(len, sequences)) * self.gap_cost
+        return - max(list(map(len, sequences))) * self.gap_cost
 
     def maximum(self, *sequences):
-        return max(map(len, sequences))
+        return max(list(map(len, sequences)))
 
     def distance(self, *sequences):
         """Get distance between sequences
@@ -424,7 +424,7 @@ class SmithWaterman(_BaseSimilarity):
         self.external = external
 
     def maximum(self, *sequences):
-        return min(map(len, sequences))
+        return min(list(map(len, sequences)))
 
     def __call__(self, s1, s2):
         if not numpy:
@@ -470,10 +470,10 @@ class Gotoh(NeedlemanWunsch):
         self.external = external
 
     def minimum(self, *sequences):
-        return -min(map(len, sequences))
+        return -min(list(map(len, sequences)))
 
     def maximum(self, *sequences):
-        return min(map(len, sequences))
+        return min(list(map(len, sequences)))
 
     def __call__(self, s1, s2):
         if not numpy:
@@ -700,7 +700,7 @@ class MLIPNS(_BaseSimilarity):
 
         mismatches = 0
         ham = Hamming()(*sequences)
-        maxlen = max(map(len, sequences))
+        maxlen = max(list(map(len, sequences)))
         while all(sequences) and mismatches <= self.maxmismatches:
             if not maxlen:
                 return 1

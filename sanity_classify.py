@@ -39,7 +39,7 @@ class SanityClassify(InfluenceClassify):
 
     @staticmethod
     def get_all_sanity_classifers(dir_id):
-        return map(lambda noise: SanityClassify(dir_id, noise), SanityClassify.NOISE)
+        return list(map(lambda noise: SanityClassify(dir_id, noise), SanityClassify.NOISE))
 
 
 class StaticClassify(SanityClassify):
@@ -55,7 +55,7 @@ class StaticClassify(SanityClassify):
 
     @staticmethod
     def get_all_static_classifers(dir_id):
-        return map(lambda noise: StaticClassify(dir_id, noise), SanityClassify.NOISE)
+        return list(map(lambda noise: StaticClassify(dir_id, noise), SanityClassify.NOISE))
 
 
 class RandomClassify(SanityClassify):
@@ -72,7 +72,7 @@ class RandomClassify(SanityClassify):
 
     @staticmethod
     def get_all_random_classifers(dir_id):
-        return map(lambda noise: RandomClassify(dir_id, noise), SanityClassify.NOISE)
+        return list(map(lambda noise: RandomClassify(dir_id, noise), SanityClassify.NOISE))
 
 
 class DoubleSanityClassify(SanityClassify):
@@ -94,4 +94,4 @@ class DoubleSanityClassify(SanityClassify):
     @staticmethod
     def get_all_double_classifers(dir_id):
         from itertools import product
-        return map(lambda noise: DoubleSanityClassify(dir_id, noise[0], noise[1]), product(SanityClassify.NOISE, SanityClassify.NOISE))
+        return list(map(lambda noise: DoubleSanityClassify(dir_id, noise[0], noise[1]), product(SanityClassify.NOISE, SanityClassify.NOISE)))

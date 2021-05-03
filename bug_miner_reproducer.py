@@ -17,11 +17,11 @@ class BugMinerReproducer(Reproducer):
     BUG_MINER_REPOS_DIR = os.path.realpath(r"repos")
 
     def __init__(self, id, failing_tests, dir_id, repo_path, diffs, blamed_components, fix):
-        super(BugMinerReproducer, self).__init__(id, map(lambda t: t.replace("#", "."), failing_tests), dir_id)
+        super(BugMinerReproducer, self).__init__(id, list(map(lambda t: t.replace("#", "."), failing_tests)), dir_id)
         self.repo_path = repo_path
         self.parent = id
         self.diffs = diffs
-        self.blamed_components = reduce(list.__add__, map(lambda x: x.split("@"), blamed_components), [])
+        self.blamed_components = reduce(list.__add__, list(map(lambda x: x.split("@"), blamed_components)), [])
         self.fix_commit = fix
 
     def get_repo(self):
@@ -62,7 +62,7 @@ class BugMinerReproducer(Reproducer):
         df = pd.read_csv(csv_path)
         ans = dict()
         commits = dict()
-        map(lambda x: commits.setdefault(x['parent'], []).append(x), map(lambda y: y[1].to_dict(), df.iterrows()))
+        list(map(lambda x: commits.setdefault(x['parent'], []).append(x), list(map(lambda y: y[1].to_dict(), df.iterrows()))))
         for bug_data in commits:
             ans[bug_data] = BugMinerReproducer(bug_data, list(set(map(lambda x: x['testcase'], commits[bug_data]))),
                                DirId(DirStructure(dir_path), bug_data),

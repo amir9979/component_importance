@@ -97,7 +97,7 @@ class FeatureExtraction(object):
                         csv_header += features_header
                         csv_data.append(csv_header)
                         features_header_added = True
-                    csv_data.append([test, function] + map(data[test][function].get, features_header))
+                    csv_data.append([test, function] + list(map(data[test][function].get, features_header)))
         with open(self.dir_id.training_set, "wb") as f:
             csv.writer(f).writerows(csv_data)
 
@@ -114,7 +114,7 @@ class FeatureExtraction(object):
                     csv_header += features_header
                     csv_data.append(csv_header)
                     features_header_added = True
-                csv_data.append([test, function] + map(data[test][function].get, features_header))
+                csv_data.append([test, function] + list(map(data[test][function].get, features_header)))
         with open(self.dir_id.testing_set, "wb") as f:
             csv.writer(f).writerows(csv_data)
 
@@ -274,7 +274,7 @@ class InstanceFeatureExtraction(object):
                     for method in class_dict['methods'] + class_dict['constructors']:
                         if method['name'].lower() in func_name:
                             method_doc = method['comment_text']
-                            params_doc = ".".join(map(lambda p: p['comment_text'], method['parameters']))
+                            params_doc = ".".join(list(map(lambda p: p['comment_text'], method['parameters'])))
                             return class_doc, method_doc, params_doc
 
         def get_doc(func_name):
@@ -319,8 +319,8 @@ class InstanceFeatureExtraction(object):
         def count_type(diff, diff_type):
             return len(filter(lambda d: d.startswith(diff_type), diff))
 
-        test_str = "".join(map(str, test_commits))
-        function_str = "".join(map(str, function_commits))
+        test_str = "".join(list(map(str, test_commits)))
+        function_str = "".join(list(map(str, function_commits)))
         diff = list(difflib.ndiff(test_str, function_str))
         seq_match = difflib.SequenceMatcher(None, test_str, function_str)
         match = seq_match.find_longest_match(0, len(test_commits), 0, len(function_commits))

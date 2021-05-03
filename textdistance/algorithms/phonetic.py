@@ -30,7 +30,7 @@ class MRA(_BaseSimilarity):
 
     def maximum(self, *sequences):
         sequences = [list(self._calc_mra(s)) for s in sequences]
-        return max(map(len, sequences))
+        return max(list(map(len, sequences)))
 
     def _calc_mra(self, word):
         if not word:
@@ -59,7 +59,7 @@ class MRA(_BaseSimilarity):
             for chars in zip(*sequences):
                 if not self._ident(*chars):
                     new_sequences.append(chars)
-            new_sequences = map(list, zip(*new_sequences))
+            new_sequences = list(map(list, zip(*new_sequences)))
             # update sequences
             ss = zip_longest(new_sequences, sequences, fillvalue=list())
             sequences = [s1 + s2[minlen:] for s1, s2 in ss]
@@ -112,15 +112,15 @@ class Editex(_Base):
             self.groups = self.letter_groups
 
     def maximum(self, *sequences):
-        return max(map(len, sequences)) * self.mismatch_cost
+        return max(list(map(len, sequences))) * self.mismatch_cost
 
     def r_cost(self, *elements):
         if self._ident(*elements):
             return self.match_cost
-        if any(map(lambda x: x not in self.grouped, elements)):
+        if any(list(map(lambda x: x not in self.grouped, elements))):
             return self.mismatch_cost
         for group in self.groups:
-            if all(map(lambda x: x in group, elements)):
+            if all(list(map(lambda x: x in group, elements))):
                 return self.group_cost
         return self.mismatch_cost
 

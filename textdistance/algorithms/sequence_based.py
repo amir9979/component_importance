@@ -161,7 +161,7 @@ class RatcliffObershelp(_BaseSimilarity):
         if result is not None:
             return result
         scount = len(sequences)  # sequences count
-        ecount = sum(map(len, sequences))  # elements count
+        ecount = sum(list(map(len, sequences)))  # elements count
         sequences = self._get_sequences(*sequences)
         return scount * self._find(*sequences) / ecount
 

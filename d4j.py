@@ -29,17 +29,17 @@ class D4JReproducer(Reproducer):
         Popen(['git', '-C', self.get_dir_id().clones, "checkout", self.fixed]).wait()
 
     def extract_buggy_functions(self):
-        return map(lambda x: x.split("@")[1].lower().replace(',', ';'), javadiff.diff.get_modified_functions(self.get_dir_id().clones))
+        return list(map(lambda x: x.split("@")[1].lower().replace(',', ';'), javadiff.diff.get_modified_functions(self.get_dir_id().clones)))
 
     @staticmethod
     def read_commit_db(dir_path, project='Lang'):
         d4j = json.load(open(D4JReproducer.D4J_JSON))
-        project_data = dict(map(lambda x: (str(x['bugId']), x), filter(lambda x: x['project'].lower() == project.lower(), d4j)))
+        project_data = dict(list(map(lambda x: (str(x['bugId']), x), filter(lambda x: x['project'].lower() == project.lower(), d4j))))
         projects = []
         with open(os.path.join(D4JReproducer.D4J_DIR, project, "commit-db")) as f:
             for id, buggy, fixed, bug_key, bug_url in csv.reader(f):
-                failing_tests = map(lambda x: "{0}.{1}".format(x['className'], x['methodName']).strip().lower(),
-                                    project_data[id]['failingTests'])
+                failing_tests = list(map(lambda x: "{0}.{1}".format(x['className'], x['methodName']).strip().lower(),
+                                    project_data[id]['failingTests']))
                 projects.append(D4JReproducer.project_class(project)(id, fixed, failing_tests, DirId(DirStructure(dir_path), id)))
         return projects
 

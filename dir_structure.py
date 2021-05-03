@@ -16,9 +16,9 @@ class DirStructure(object):
             setattr(self, dir, os.path.join(self.base_path, dir))
 
     def get_marked_ids(self):
-        ids = map(lambda d: DirId(self, d), os.listdir(self.mark))
-        assert all(map(lambda x: x.is_marked(), ids))
-        return map(lambda x: x.id, ids)
+        ids = list(map(lambda d: DirId(self, d), os.listdir(self.mark)))
+        assert all(list(map(lambda x: x.is_marked(), ids)))
+        return list(map(lambda x: x.id, ids))
 
     @staticmethod
     def mkdir(path):

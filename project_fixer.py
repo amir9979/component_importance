@@ -38,7 +38,7 @@ class project_fixer(object):
         override_annotation = "@Override"
         with open(test_file) as f:
             lines = f.readlines()
-        test_lines = map(lambda t: t[0], filter(lambda x: test_name in x[1], enumerate(lines)))
+        test_lines = list(map(lambda t: t[0], filter(lambda x: test_name in x[1], enumerate(lines))))
         if not test_lines:
             return
         for test_line in test_lines:

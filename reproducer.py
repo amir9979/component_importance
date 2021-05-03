@@ -79,17 +79,17 @@ class Reproducer(object):
         DirStructure.mkdir(self.get_dir_id().traces)
         if self.test_traces:
             return
-        tests_to_run = map(lambda t: ".".join(t.split('.')[:5]) + '*', self.failing_tests)
+        tests_to_run = list(map(lambda t: ".".join(t.split('.')[:5]) + '*', self.failing_tests))
         tests = tests_to_run if trace_failed else None
         self.clear()
         traces = list(repo.run_under_jcov(self.get_dir_id().traces, False, instrument_only_methods=True, short_type=True, tests_to_run=tests, check_comp_error=False))
-        self.test_traces = dict(map(lambda t: (t.test_name, t), traces))
+        self.test_traces = dict(list(map(lambda t: (t.test_name, t), traces)))
 
     def get_optimized_traces(self):
-        all_tests = filter(lambda x: x, map(self.test_traces.get, self.tests_to_trace))
-        fail_tests = filter(lambda test: self.get_surefire_tests()[test.test_name].outcome in self.get_non_pass_outcomes(), all_tests)
-        fail_components = reduce(set.__or__, map(lambda test: set(test.get_trace()), fail_tests), set())
-        self.optimized_traces = dict(map(lambda t: (t.test_name, t), filter(lambda test: fail_components & set(test.get_trace()), all_tests)))
+        all_tests = list(filter(lambda x: x, list(map(self.test_traces.get, self.tests_to_trace))))
+        fail_tests = list(filter(lambda test: self.get_surefire_tests()[test.test_name].outcome in self.get_non_pass_outcomes(), all_tests))
+        fail_components = reduce(set.__or__, list(map(lambda test: set(test.get_trace()), fail_tests)), set())
+        self.optimized_traces = dict(list(map(lambda t: (t.test_name, t), list(filter(lambda test: fail_components & set(test.get_trace())), all_tests))))
 
     def get_failing_tests_as_surefire_tests(self):
         failing_tests = []
@@ -172,7 +172,7 @@ class Reproducer(object):
         self.get_optimized_traces()
         self.get_buggy_functions(True)
         tests_details = []
-        bugs = map(lambda b: b.replace(',', ';'), self.bugs)
+        bugs = list(map(lambda b: b.replace(',', ';'), self.bugs))
         for test in self.optimized_traces.values():
             nice_trace = list(set(map(
                 lambda t: t.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""),
@@ -197,10 +197,10 @@ class Reproducer(object):
         test_sources_path = r'src/test/java'
         commits = dict()
         repo = git.Repo(self.get_dir_id().clones)
-        repo_commits = map(lambda x: x.hexsha[:7], list(repo.iter_commits()))
+        repo_commits = list(map(lambda x: x.hexsha[:7], list(repo.iter_commits())))
         for file_name in filter(lambda f: sources_path in f or test_sources_path in f, repo.git.ls_files().split('\n')):
-            file_commits = map(lambda x: x[:7], repo.git.log('--pretty=format:%h', file_name).split('\n'))
-            commits[file_name] = map(lambda c: 1 if c in file_commits else 0, repo_commits)
+            file_commits = list(map(lambda x: x[:7], repo.git.log('--pretty=format:%h', file_name).split('\n')))
+            commits[file_name] = list(map(lambda c: 1 if c in file_commits else 0, repo_commits))
         with open(self.get_dir_id().files_commits, "wb") as f:
             json.dump(commits, f)
         return commits
@@ -213,7 +213,7 @@ class Reproducer(object):
         for file_name in filter(lambda f: sources_path in f or test_sources_path in f, repo.git.ls_files().split('\n')):
             try:
                 with open(os.path.join(self.get_dir_id().clones, file_name)) as f:
-                    map(lambda m: files_functions.setdefault(m.id.split("@")[1].lower().replace(',', ';'), file_name), SourceFile(f.read(), file_name).methods.values())
+                    list(map(lambda m: files_functions.setdefault(m.id.split("@")[1].lower().replace(',', ';'), file_name), SourceFile(f.read(), file_name).methods.values()))
             except:
                 pass
         with open(self.get_dir_id().files_functions, "wb") as f:
@@ -252,7 +252,7 @@ class Reproducer(object):
         self.extract_tests_to_trace()
         self.get_buggy_functions()
         labels = {}
-        bugs = map(lambda b: b.replace(',', ';'), self.bugs)
+        bugs = list(map(lambda b: b.replace(',', ';'), self.bugs))
         for test in self.optimized_traces.values():
             nice_trace = list(set(map(
                 lambda t: t.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""),
@@ -277,7 +277,7 @@ class Reproducer(object):
 
     def save_tests_results(self):
         self.get_optimized_traces()
-        data = dict(map(lambda t: (t, self.get_surefire_tests()[t].outcome == 'pass'), self.optimized_traces))
+        data = dict(list(map(lambda t: (t, self.get_surefire_tests()[t].outcome == 'pass'), self.optimized_traces)))
         with open(self.get_dir_id().tests_results, "wb") as f:
             json.dump(data, f)
 

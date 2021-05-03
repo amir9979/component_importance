@@ -131,7 +131,7 @@ class SameLengthLibrary(LibraryBase):
         if not super(SameLengthLibrary, self).check_conditions(obj, *sequences):
             return False
         # compare only same length iterators
-        if min(map(len, sequences)) != max(map(len, sequences)):
+        if min(list(map(len, sequences))) != max(list(map(len, sequences))):
             return False
         return True
 

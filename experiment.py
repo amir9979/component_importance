@@ -25,7 +25,7 @@ class Experiment(object):
                 pass
 
     def experiment(self, skip_if_not_exists=False):
-        sanity_results = dict(map(lambda s: (s.matrix_id, s.experiment()), filter(lambda x: x.is_exists() or not skip_if_not_exists, self.matrices)))
+        sanity_results = dict(list(map(lambda s: (s.matrix_id, s.experiment()), filter(lambda x: x.is_exists() or not skip_if_not_exists, self.matrices))))
         results_header = ["id", "matrix_name", "alpha"]
         metrics_header_added = False
         results = []
@@ -38,7 +38,7 @@ class Experiment(object):
                         results_header.extend(header)
                         results.append(results_header)
                         metrics_header_added = True
-                    results_row = [id, matrix_name, alpha] + map(lambda h: metrics[h], header)
+                    results_row = [id, matrix_name, alpha] + list(map(lambda h: metrics[h], header))
                     results.append(results_row)
         with open(self.dir_structure.experiment, "wb") as f:
             csv.writer(f).writerows(results)
@@ -46,17 +46,17 @@ class Experiment(object):
 
     def classification_evaluate(self):
         def dir_classifiers(dir_name):
-            return dict(map(lambda x: (x, json.load(open(os.path.join(dir_name, x)))), os.listdir(dir_name)))
+            return dict(list(map(lambda x: (x, json.load(open(os.path.join(dir_name, x)))), os.listdir(dir_name))))
         dirs = list(map(lambda x: os.path.join(self.dir_structure.classification_metrics, x), os.listdir(self.dir_structure.classification_metrics)))
         a = list(map(dir_classifiers, dirs))
         try:
             metrics = sorted(a[0].values()[0].keys())
             classifiers_data = dict(
-                map(lambda k: (k, reduce(list.__add__, map(lambda res: res.get(k, {}).items(), a), [])), a[0].keys()))
-            classifiers_evaluation = dict(map(lambda d: (d, dict(map(lambda metric: (metric, mean(map(itemgetter(1), filter(lambda x: metric==x[0], classifiers_data[d])))), metrics))), classifiers_data))
+                list(map(lambda k: (k, reduce(list.__add__, list(map(lambda res: res.get(k, {}).items(), a)), [])), a[0].keys())))
+            classifiers_evaluation = dict(list(map(lambda d: (d, dict(list(map(lambda metric: (metric, mean(list(map(itemgetter(1), filter(lambda x: metric==x[0], classifiers_data[d]))))), metrics)))), classifiers_data)))
             results = [["classifier_name"] + metrics]
             for classifier_name in classifiers_evaluation:
-                results_row = [classifier_name] + map(lambda h: classifiers_evaluation[classifier_name][h], metrics)
+                results_row = [classifier_name] + list(map(lambda h: classifiers_evaluation[classifier_name][h], metrics))
                 results.append(results_row)
             with open(self.dir_structure.classification_evaluate, "wb") as f:
                 csv.writer(f).writerows(results)
@@ -123,11 +123,11 @@ class ExperimentMatrix(object):
         from sanity_classify import SanityClassify, StaticClassify, RandomClassify, DoubleSanityClassify
         from learning_classify import LearningClassify
         experiment_matrix = ExperimentMatrix(dir_id)
-        map(experiment_matrix.add_classifer, SanityClassify.get_all_sanity_classifers(dir_id))
-        map(experiment_matrix.add_classifer, StaticClassify.get_all_static_classifers(dir_id))
-        map(experiment_matrix.add_classifer, RandomClassify.get_all_random_classifers(dir_id))
-        # map(experiment_matrix.add_classifer, DoubleSanityClassify.get_all_double_classifers(dir_id))
-        map(experiment_matrix.add_classifer, LearningClassify.get_all_classifers(dir_id))
+        list(map(experiment_matrix.add_classifer, SanityClassify.get_all_sanity_classifers(dir_id)))
+        list(map(experiment_matrix.add_classifer, StaticClassify.get_all_static_classifers(dir_id)))
+        list(map(experiment_matrix.add_classifer, RandomClassify.get_all_random_classifers(dir_id)))
+        # list(map(experiment_matrix.add_classifer, DoubleSanityClassify.get_all_double_classifers(dir_id)))
+        list(map(experiment_matrix.add_classifer, LearningClassify.get_all_classifers(dir_id)))
         experiment_matrix.experiment()
 
 

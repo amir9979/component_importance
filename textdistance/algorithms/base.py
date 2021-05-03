@@ -22,7 +22,7 @@ class Base(object):
     def maximum(*sequences):
         """Get maximum possible value
         """
-        return max(map(len, sequences))
+        return max(list(map(len, sequences)))
 
     def distance(self, *sequences):
         """Get distance between sequences
