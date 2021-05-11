@@ -90,7 +90,8 @@ class Reproducer(object):
         all_tests = list(filter(lambda x: x, list(map(self.test_traces.get, self.tests_to_trace))))
         fail_tests = list(filter(lambda test: self.get_surefire_tests()[test.test_name].outcome in self.get_non_pass_outcomes(), all_tests))
         fail_components = reduce(set.__or__, list(map(lambda test: set(test.get_trace()), fail_tests)), set())
-        self.optimized_traces = dict(list(map(lambda t: (t.test_name, t), list(filter(lambda test: fail_components & set(test.get_trace())), all_tests))))
+        self.optimized_traces = dict(list(map(lambda t: (t.test_name, t),
+                                              list(filter(lambda test: fail_components & set(test.get_trace()), all_tests)))))
 
     def get_failing_tests_as_surefire_tests(self):
         failing_tests = []
