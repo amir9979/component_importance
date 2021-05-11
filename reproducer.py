@@ -5,6 +5,7 @@ import os
 try:
     from mvnpy.Repo import Repo
 except:
+    from mvnpy import Repo
     from Repo import Repo
 from subprocess import Popen
 from dir_structure import DirStructure, DirId

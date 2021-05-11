@@ -1,7 +1,7 @@
 from html.parser import HTMLParser
 
 
-class MLStripper(object, HTMLParser):
+class MLStripper(HTMLParser):
     def __init__(self):
         super(MLStripper, self).__init__()
         self.reset()

@@ -10,7 +10,7 @@ from subprocess import Popen
 import tempfile
 from ast import literal_eval
 import pandas as pd
-
+from functools import reduce
 
 class BugMinerReproducer(Reproducer):
     BUG_MINER_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), r"bug_miner"))
