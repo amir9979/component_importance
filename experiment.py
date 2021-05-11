@@ -10,7 +10,7 @@ from sfl.sfl.Diagnoser.Experiment_Data import Experiment_Data
 from sfl.sfl.Diagnoser.Diagnosis_Results import Diagnosis_Results
 from operator import itemgetter
 from numpy import mean
-
+from functools import reduce
 
 class Experiment(object):
     def __init__(self, dir_structure):

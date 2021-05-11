@@ -21,7 +21,7 @@ try:
     from javadiff.SourceFile import SourceFile
 except:
     from javadiff.javadiff.SourceFile import SourceFile
-
+from functools import reduce
 
 
 class Reproducer(object):
