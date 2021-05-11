@@ -13,7 +13,7 @@ DIR_BASE_PATH = r"component_importance_data"
 NUM_PROCCESSES = 1
 
 def run_process(cmd_args):
-    print "Running", cmd_args
+    print("Running", cmd_args)
     proc = Popen([sys.executable] + cmd_args)
     proc.communicate()
 

@@ -13,7 +13,7 @@ def create_csv_for_project(project, num_processes=15):
         if dir in listdir:
             dir_name = os.path.join(r'd:\amirelm\component_importnace\data', dir)
             # os.mkdir(dir_name)
-            print dir_name
+            print(dir_name)
             break
     assert dir_name
     cmds = list(map(lambda x: ["python.exe", "d4j.py", dir_name, project, str(x)], range(200)))

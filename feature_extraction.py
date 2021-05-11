@@ -69,7 +69,7 @@ class FeatureExtraction(object):
             traces = json.load(f)
         for test in traces:
             for function in traces[test]:
-                print test, function, time.time()
+                print(test, function, time.time())
                 features_dict = self.unlabeled_features.setdefault(test, dict()).setdefault(function, dict())
                 features_dict.update(InstanceFeatureExtraction(self.dir_id, test, function).extract())
         with open(self.dir_id.unlabeled_data, "wb") as f:

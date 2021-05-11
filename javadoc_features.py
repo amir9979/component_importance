@@ -77,4 +77,4 @@ tfidf = vect.fit_transform(["My name is Ankit",
                              "Ankit like his name",
                              "India has a lot of beautiful cities"])
 
-print ((tfidf * tfidf.T).A)
+print((tfidf * tfidf.T).A)
