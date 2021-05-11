@@ -59,7 +59,7 @@ class FeatureExtraction(object):
                 features_dict = self.labeled_features.setdefault(test, dict()).setdefault(function, dict())
                 features_dict['label'] = labels[test][function]
                 features_dict.update(InstanceFeatureExtraction(self.dir_id, test, function).extract())
-        with open(self.dir_id.labeled_data, "wb") as f:
+        with open(self.dir_id.labeled_data, "w") as f:
             json.dump(self.labeled_features, f)
 
     def extract_all_data(self):
@@ -72,7 +72,7 @@ class FeatureExtraction(object):
                 print(test, function, time.time())
                 features_dict = self.unlabeled_features.setdefault(test, dict()).setdefault(function, dict())
                 features_dict.update(InstanceFeatureExtraction(self.dir_id, test, function).extract())
-        with open(self.dir_id.unlabeled_data, "wb") as f:
+        with open(self.dir_id.unlabeled_data, "w") as f:
             json.dump(self.unlabeled_features, f)
 
     def extract(self):
@@ -98,7 +98,7 @@ class FeatureExtraction(object):
                         csv_data.append(csv_header)
                         features_header_added = True
                     csv_data.append([test, function] + list(map(data[test][function].get, features_header)))
-        with open(self.dir_id.training_set, "wb") as f:
+        with open(self.dir_id.training_set, "w") as f:
             csv.writer(f).writerows(csv_data)
 
     def get_testing_set(self):
@@ -115,7 +115,7 @@ class FeatureExtraction(object):
                     csv_data.append(csv_header)
                     features_header_added = True
                 csv_data.append([test, function] + list(map(data[test][function].get, features_header)))
-        with open(self.dir_id.testing_set, "wb") as f:
+        with open(self.dir_id.testing_set, "w") as f:
             csv.writer(f).writerows(csv_data)
 
 

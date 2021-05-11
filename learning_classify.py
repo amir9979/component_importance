@@ -210,7 +210,7 @@ class LearningClassify(InfluenceClassify):
         for score in scores:
             all_scores["{0}_mean".format(score)] = scores[score].mean()
             all_scores["{0}_std".format(score)] = scores[score].std()
-        with open(os.path.join(DirStructure.mkdir(self.get_dir_id().classification_metrics), self.get_name()), "wb") as f:
+        with open(os.path.join(DirStructure.mkdir(self.get_dir_id().classification_metrics), self.get_name()), "w") as f:
             json.dump(all_scores, f)
 
     def _describe_helper(self, dir_name, array):

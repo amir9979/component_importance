@@ -38,11 +38,11 @@ for commit in tests_to_watch:
 			instances.append(features)
 		
 
-with open(r"C:\amirelm\component_importnace\data\d4j_lang\training_graph.json", "wb") as f:
+with open(r"C:\amirelm\component_importnace\data\d4j_lang\training_graph.json", "w") as f:
 	json.dump(instances, f)
 	
 keys = sorted(instances[0].keys())
 lines = list(map(lambda i: list(map(lambda k: i[k], keys)), instances))
-with open(r"C:\amirelm\component_importnace\data\d4j_lang\training_graph.csv", "wb") as f:
+with open(r"C:\amirelm\component_importnace\data\d4j_lang\training_graph.csv", "w") as f:
 	csv.writer(f).writerows([keys] + lines)
 

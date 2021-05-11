@@ -42,7 +42,7 @@ class BugDotJar(Reproducer):
             for file_name in filter(lambda x: x.endswith('.sh'), files):
                 with open(file_name) as f:
                     lines = list(map(lambda x: x.replace('\r', ''), f.readlines()))
-                with open(file_name, "wb") as f:
+                with open(file_name, "w") as f:
                     f.writelines(lines)
 
     def get_repo(self):

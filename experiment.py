@@ -40,7 +40,7 @@ class Experiment(object):
                         metrics_header_added = True
                     results_row = [id, matrix_name, alpha] + list(map(lambda h: metrics[h], header))
                     results.append(results_row)
-        with open(self.dir_structure.experiment, "wb") as f:
+        with open(self.dir_structure.experiment, "w") as f:
             csv.writer(f).writerows(results)
         self.classification_evaluate()
 
@@ -58,7 +58,7 @@ class Experiment(object):
             for classifier_name in classifiers_evaluation:
                 results_row = [classifier_name] + list(map(lambda h: classifiers_evaluation[classifier_name][h], metrics))
                 results.append(results_row)
-            with open(self.dir_structure.classification_evaluate, "wb") as f:
+            with open(self.dir_structure.classification_evaluate, "w") as f:
                 csv.writer(f).writerows(results)
         except:
             pass
@@ -108,12 +108,12 @@ class ExperimentMatrix(object):
                 for matrix_name, influence_data in self.generate_influence_data(alpha):
                     matrix = copy.deepcopy(json_matrix)
                     matrix.update(influence_data)
-                    with open(os.path.join(self.dir_id.experiment_matrices, matrix_name + str(alpha)), "wb") as f:
+                    with open(os.path.join(self.dir_id.experiment_matrices, matrix_name + str(alpha)), "w") as f:
                         json.dump(matrix, f)
                     ei = read_json_planning_instance(matrix)
                     ei.diagnose()
                     results.setdefault(matrix_name, dict())[alpha] = Diagnosis_Results(ei.diagnoses, ei.initial_tests, ei.error).metrics
-            with open(self.dir_id.experiments, "wb") as f:
+            with open(self.dir_id.experiments, "w") as f:
                 json.dump(results, f)
         with open(self.dir_id.experiments) as f:
             return json.loads(f.read())

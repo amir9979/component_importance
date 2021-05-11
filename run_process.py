@@ -21,7 +21,7 @@ def main(num_processes, cmd_lines_path):
 
 def main_cmds(num_processes, cmds):
     file_name = mktemp()
-    with open(file_name, 'wb') as f:
+    with open(file_name, 'w') as f:
         csv.writer(f).writerows(cmds)
     main(num_processes, file_name)
     os.remove(file_name)

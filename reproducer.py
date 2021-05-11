@@ -131,7 +131,7 @@ class Reproducer(object):
                 self.bugs = json.loads(f.read())
         else:
             self.bugs = self.extract_buggy_functions()
-            with open(self.get_dir_id().bugs, "wb") as f:
+            with open(self.get_dir_id().bugs, "w") as f:
                 json.dump(self.bugs, f)
         if self.bugs:
             return True
@@ -189,7 +189,7 @@ class Reproducer(object):
         repo = git.Repo(self.get_dir_id().clones)
         for file_name in filter(lambda f: sources_path in f, repo.git.ls_files().split('\n')):
             packages[os.path.normpath(file_name.split('.java')[0].split(sources_path)[1]).replace(os.sep, '.')[1:]] = file_name
-        with open(self.get_dir_id().files_packages, "wb") as f:
+        with open(self.get_dir_id().files_packages, "w") as f:
             json.dump(packages, f)
         return packages
 
@@ -202,7 +202,7 @@ class Reproducer(object):
         for file_name in filter(lambda f: sources_path in f or test_sources_path in f, repo.git.ls_files().split('\n')):
             file_commits = list(map(lambda x: x[:7], repo.git.log('--pretty=format:%h', file_name).split('\n')))
             commits[file_name] = list(map(lambda c: 1 if c in file_commits else 0, repo_commits))
-        with open(self.get_dir_id().files_commits, "wb") as f:
+        with open(self.get_dir_id().files_commits, "w") as f:
             json.dump(commits, f)
         return commits
 
@@ -217,7 +217,7 @@ class Reproducer(object):
                     list(map(lambda m: files_functions.setdefault(m.id.split("@")[1].lower().replace(',', ';'), file_name), SourceFile(f.read(), file_name).methods.values()))
             except:
                 pass
-        with open(self.get_dir_id().files_functions, "wb") as f:
+        with open(self.get_dir_id().files_functions, "w") as f:
             json.dump(files_functions, f)
 
     def generate_javadoc(self):
@@ -260,7 +260,7 @@ class Reproducer(object):
                 test.get_trace())))
             for bug in filter(nice_trace.__contains__, bugs):
                 labels.setdefault(test.test_name, dict())[bug] = self.get_surefire_tests()[test.test_name].outcome == 'pass'
-        with open(self.get_dir_id().labels, "wb") as f:
+        with open(self.get_dir_id().labels, "w") as f:
             json.dump(labels, f)
 
     def save_traces(self):
@@ -273,13 +273,13 @@ class Reproducer(object):
             traces[test.test_name] = nice_trace
             if test.test_name + "()" in nice_trace:
                 nice_trace.remove(test.test_name + "()")
-        with open(self.get_dir_id().traces_json, "wb") as f:
+        with open(self.get_dir_id().traces_json, "w") as f:
             json.dump(traces, f)
 
     def save_tests_results(self):
         self.get_optimized_traces()
         data = dict(list(map(lambda t: (t, self.get_surefire_tests()[t].outcome == 'pass'), self.optimized_traces)))
-        with open(self.get_dir_id().tests_results, "wb") as f:
+        with open(self.get_dir_id().tests_results, "w") as f:
             json.dump(data, f)
 
     def do_all(self):

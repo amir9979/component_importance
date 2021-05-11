@@ -5,4 +5,4 @@ checkouts = list(map(lambda x: r"git -C C:\amirelm\component_importnace\data\d4j
 new_lines = clones + checkouts
 map(lambda x: x.split(), new_lines)
 new_lines2 = list(map(lambda x: x.split(), new_lines))
-csv.writer(open(r"c:\temp\d4j_math.csv", "wb")).writerows(new_lines2)
+csv.writer(open(r"c:\temp\d4j_math.csv", "w")).writerows(new_lines2)
