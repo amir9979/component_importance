@@ -135,8 +135,8 @@ class InstanceFeatureExtraction(object):
         return self.features
 
     def _graph(self, g, graph_name):
-        test_node = filter(lambda node: self.test in node.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""), g.node)[0]
-        component_node = filter(lambda node: self.function in node.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""), g.node)[0]
+        test_node = list(filter(lambda node: self.test in node.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""), g.node))[0]
+        component_node = list(filter(lambda node: self.function in node.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""), g.node))[0]
         self.features[graph_name + '_num_paths'] = len(
             list(networkx.algorithms.simple_paths.all_simple_paths(g, test_node, component_node)))
         if self.features[graph_name + '_num_paths']:
@@ -175,7 +175,7 @@ class InstanceFeatureExtraction(object):
         distance_functions = ['distance', 'similarity', 'normalized_distance', 'normalized_similarity']
 
         def count_type(diff, diff_type):
-            return len(filter(lambda d: d.startswith(diff_type), diff))
+            return len(list(filter(lambda d: d.startswith(diff_type), diff)))
 
         for feature_name, test in [('full_name_', self.test), ('partial_name_', self.test.replace('test', ''))]:
             diff = list(difflib.ndiff(test, self.function))
@@ -218,7 +218,7 @@ class InstanceFeatureExtraction(object):
             if not txt: return None
             sentences = (re_stripper_alpha.split(x) for x in sent_detector.tokenize(txt) if x)
             # Need to filter X because of empty 'words' from punctuation split
-            ng = (ngrams(filter(None, x), n) for x in sentences if len(x) >= n)
+            ng = (ngrams(list(filter(None, x)), n) for x in sentences if len(x) >= n)
             return list(chain(*ng))
 
         def get_tuples_textblob_sentences(txt, n):
@@ -258,7 +258,7 @@ class InstanceFeatureExtraction(object):
             return [stemmer.stem(item) for item in tokens]
 
         def normalize(text):
-            return stem_tokens(filter(lambda x: x not in stopwords.words('english'), nltk.word_tokenize(filter(lambda x: x not in string.punctuation, MLStripper.strip_tags(text).lower()))))
+            return stem_tokens(list(filter(lambda x: x not in stopwords.words('english'), nltk.word_tokenize(list(filter(lambda x: x not in string.punctuation, MLStripper.strip_tags(text).lower()))))))
         #
         # def ngrams(text, n):
         #     return Counter(zip(*[normalize(text)[i:] for i in range(n)]))
@@ -310,14 +310,14 @@ class InstanceFeatureExtraction(object):
             files_commits = json.loads(f.read())
         test_commits = files_commits[files_functions[self.test + "()"]]
         function_commits = files_commits[files_functions[self.function]]
-        self.features["common_commits"] = len(filter(lambda x: x[0] == x[1], zip(test_commits, function_commits)))
+        self.features["common_commits"] = len(list(filter(lambda x: x[0] == x[1], zip(test_commits, function_commits))))
         REMOVED = '- '
         ADDED = '+ '
         UNCHANGED = '  '
         NOT_IN_INPUT = '? '
 
         def count_type(diff, diff_type):
-            return len(filter(lambda d: d.startswith(diff_type), diff))
+            return len(list(filter(lambda d: d.startswith(diff_type), diff)))
 
         test_str = "".join(list(map(str, test_commits)))
         function_str = "".join(list(map(str, function_commits)))

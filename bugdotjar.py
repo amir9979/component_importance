@@ -55,7 +55,7 @@ class BugDotJar(Reproducer):
             if not os.path.exists(dir_path):
                 os.mkdir(dir_path)
         assert dir_path
-        bugs = filter(lambda b: b['project'].lower() == project.lower(), json.load(open(BugDotJar.BugDotJar_JSON)))
+        bugs = list(filter(lambda b: b['project'].lower() == project.lower(), json.load(open(BugDotJar.BugDotJar_JSON))))
         projects = []
         for bug in bugs:
             commit = bug['commit']

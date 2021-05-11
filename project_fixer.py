@@ -51,7 +51,7 @@ class project_fixer(object):
     def rename_test(self, test_file, test_name):
         with open(test_file) as f:
             lines = f.readlines()
-        test_lines = filter(lambda x: test_name in x[1], enumerate(lines))
+        test_lines = list(filter(lambda x: test_name in x[1], enumerate(lines)))
         for test_line in test_lines:
             lines[test_line[0]] = lines[test_line[0]].replace("test", "non_test")
             with open(test_file, "w") as f:
@@ -60,6 +60,6 @@ class project_fixer(object):
     def search_line(self, test_file, line):
         with open(test_file) as f:
             lines = f.readlines()
-        test_line = filter(lambda x: line in x[1], enumerate(lines))
+        test_line = list(filter(lambda x: line in x[1], enumerate(lines)))
         if len(test_line) == 1:
             return self.comment_line(test_file, test_line[0][0])

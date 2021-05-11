@@ -4,7 +4,7 @@ import textdistance
 
 
 def count_type(diff, diff_type):
-	return len(filter(lambda d: d.startswith(diff_type), diff))
+	return len(list(filter(lambda d: d.startswith(diff_type), diff)))
 
 def count_diff_changes(diff):
 	REMOVED = '- '

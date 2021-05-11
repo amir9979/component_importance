@@ -32,8 +32,8 @@ for commit in tests_to_watch:
 			features = {"observation" : observation}
 			for g_type in [call_graphs, execution_graphs]:
 				graph = networkx.read_gexf(os.path.join(g_type, commit, test+".gexf"))
-				test_node = filter(lambda node: test in node.lower(), graph.node)[0]
-				component_node = filter(lambda node: component in node.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""), graph.node)[0]
+				test_node = list(filter(lambda node: test in node.lower(), graph.node)[0])
+				component_node = list(filter(lambda node: component in node.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""), graph.node))[0]
 				features.update(get_graph_features(graph, test_node, component_node, os.path.basename(g_type)))
 			instances.append(features)
 		
