@@ -127,8 +127,8 @@ class InstanceFeatureExtraction(object):
         self.features = dict()
 
     def extract(self):
-        # self.call_graph()
-        # self.execution_graph()
+        self.call_graph()
+        self.execution_graph()
         self.semantic_name()
         # self.javadoc()
         # self.commits_data()
@@ -184,12 +184,12 @@ class InstanceFeatureExtraction(object):
             self.features[feature_name + "_diff_removed"] = count_type(diff, REMOVED)
             self.features[feature_name + "_diff_added"] = count_type(diff, ADDED)
             self.features[feature_name + "_diff_unchanged"] = count_type(diff, UNCHANGED)
-            self.features[feature_name + "_longest_substring"] = match.size
-            self.features[feature_name + "_longest_substring_ratio"] = seq_match.ratio()
+            self.features[feature_name + "_longest_substring"] = int(match.size)
+            self.features[feature_name + "_longest_substring_ratio"] = float(seq_match.ratio())
             for metric in distance_metrics:
                 for function in distance_functions:
                     self.features[feature_name + "{0}_{1}".format(metric.__class__.__name__, function)] = \
-                        getattr(metric, function)(test, self.function)
+                        float(getattr(metric, function)(test, self.function))
 
     def javadoc(self):
         re_sent_ends_naive = re.compile(r'[.\n]')
