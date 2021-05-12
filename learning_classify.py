@@ -129,7 +129,7 @@ class LearningClassify(InfluenceClassify):
 
     def cross_validation(self):
         import sklearn.metrics as metrics
-        from sklearn.metrics.scorer import get_scorer
+        from sklearn.metrics import get_scorer
         scores_names = ['accuracy', 'adjusted_mutual_info_score', 'adjusted_rand_score', 'average_precision', 'completeness_score',
          'f1', 'f1_macro', 'f1_micro', 'f1_weighted', 'fowlkes_mallows_score',
          'homogeneity_score', 'mutual_info_score', 'neg_log_loss', 'normalized_mutual_info_score', 'precision',
