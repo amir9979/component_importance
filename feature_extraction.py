@@ -158,10 +158,16 @@ class InstanceFeatureExtraction(object):
         networkx.algorithms.centrality.out_degree_centrality(g)[component_node]
 
     def call_graph(self):
-        self._graph(networkx.read_gexf(os.path.join(self.dir_id.call_graphs, self.test + ".gexf")), "call_graph")
+        try:
+            self._graph(networkx.read_gexf(os.path.join(self.dir_id.call_graphs, self.test + ".gexf")), "call_graph")
+        except Exception as e:
+            print(e)
 
     def execution_graph(self):
-        self._graph(networkx.read_gexf(os.path.join(self.dir_id.execution_graphs, self.test + ".gexf")), "execution_graph")
+        try:
+            self._graph(networkx.read_gexf(os.path.join(self.dir_id.execution_graphs, self.test + ".gexf")), "execution_graph")
+        except Exception as e:
+            print(e)
 
     def semantic_name(self):
         REMOVED = '- '
