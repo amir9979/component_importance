@@ -135,8 +135,8 @@ class InstanceFeatureExtraction(object):
         return self.features
 
     def _graph(self, g, graph_name):
-        test_node = list(filter(lambda node: self.test in node.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""), g.node))[0]
-        component_node = list(filter(lambda node: self.function in node.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""), g.node))[0]
+        test_node = list(filter(lambda node: self.test in node.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""), g.nodes))[0]
+        component_node = list(filter(lambda node: self.function in node.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""), g.nodes))[0]
         self.features[graph_name + '_num_paths'] = len(
             list(networkx.algorithms.simple_paths.all_simple_paths(g, test_node, component_node)))
         if self.features[graph_name + '_num_paths']:
