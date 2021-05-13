@@ -135,8 +135,14 @@ class InstanceFeatureExtraction(object):
         return self.features
 
     def _graph(self, g, graph_name):
-        test_node = list(filter(lambda node: self.test in node.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""), g.nodes))[0]
-        component_node = list(filter(lambda node: self.function in node.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""), g.nodes))[0]
+        def find_node(name, nodes):
+            return list(filter(lambda node: name in node.lower().replace("java.lang.", "").replace("java.io.", "").replace("java.util.", ""), nodes))
+        test_node = find_node(self.test, g.nodes)
+        component_node = find_node(self.function, g.nodes)
+        if len(test_node) == 0 or len(component_node) == 0:
+            return
+        test_node = test_node[0]
+        component_node = component_node[0]
         self.features[graph_name + '_num_paths'] = len(
             list(networkx.algorithms.simple_paths.all_simple_paths(g, test_node, component_node)))
         if self.features[graph_name + '_num_paths']:
@@ -158,16 +164,10 @@ class InstanceFeatureExtraction(object):
         networkx.algorithms.centrality.out_degree_centrality(g)[component_node]
 
     def call_graph(self):
-        try:
-            self._graph(networkx.read_gexf(os.path.join(self.dir_id.call_graphs, self.test + ".gexf")), "call_graph")
-        except Exception as e:
-            print(e)
+        self._graph(networkx.read_gexf(os.path.join(self.dir_id.call_graphs, self.test + ".gexf")), "call_graph")
 
     def execution_graph(self):
-        try:
-            self._graph(networkx.read_gexf(os.path.join(self.dir_id.execution_graphs, self.test + ".gexf")), "execution_graph")
-        except Exception as e:
-            print(e)
+        self._graph(networkx.read_gexf(os.path.join(self.dir_id.execution_graphs, self.test + ".gexf")), "execution_graph")
 
     def semantic_name(self):
         REMOVED = '- '
