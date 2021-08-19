@@ -1,0 +1,3 @@
+org.apache.commons.lang.ArrayUtilsTest
+org.apache.commons.lang.builder.HashCodeBuilderAndEqualsBuilderTest
+org.apache.commons.lang.builder.HashCodeBuilderTest
