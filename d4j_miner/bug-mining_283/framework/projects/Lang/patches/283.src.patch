@@ -1,0 +1,30 @@
+diff --git a/src/main/java/org/apache/commons/lang3/builder/EqualsBuilder.java b/src/main/java/org/apache/commons/lang3/builder/EqualsBuilder.java
+index 0cde03f97..1c6eaff53 100644
+--- a/src/main/java/org/apache/commons/lang3/builder/EqualsBuilder.java
++++ b/src/main/java/org/apache/commons/lang3/builder/EqualsBuilder.java
+@@ -24,7 +24,6 @@ import java.util.HashSet;
+ import java.util.Set;
+ 
+ import org.apache.commons.lang3.ArrayUtils;
+-import org.apache.commons.lang3.ClassUtils;
+ import org.apache.commons.lang3.tuple.Pair;
+ 
+ /**
+@@ -355,14 +354,10 @@ public class EqualsBuilder implements Builder<Boolean> {
+         }
+         final EqualsBuilder equalsBuilder = new EqualsBuilder();
+         try {
+-            if (testClass.isArray()) {
+-                equalsBuilder.append(lhs, rhs);
+-            } else {
++            reflectionAppend(lhs, rhs, testClass, equalsBuilder, testTransients, excludeFields);
++            while (testClass.getSuperclass() != null && testClass != reflectUpToClass) {
++                testClass = testClass.getSuperclass();
+                 reflectionAppend(lhs, rhs, testClass, equalsBuilder, testTransients, excludeFields);
+-                while (testClass.getSuperclass() != null && testClass != reflectUpToClass) {
+-                    testClass = testClass.getSuperclass();
+-                    reflectionAppend(lhs, rhs, testClass, equalsBuilder, testTransients, excludeFields);
+-                }
+             }
+         } catch (final IllegalArgumentException e) {
+             // In this case, we tried to test a subclass vs. a superclass and

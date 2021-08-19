@@ -1,0 +1,119 @@
+diff --git a/src/main/java/org/apache/commons/lang3/time/DurationFormatUtils.java b/src/main/java/org/apache/commons/lang3/time/DurationFormatUtils.java
+index f8b9d92d2..09e636b4f 100644
+--- a/src/main/java/org/apache/commons/lang3/time/DurationFormatUtils.java
++++ b/src/main/java/org/apache/commons/lang3/time/DurationFormatUtils.java
+@@ -123,30 +123,30 @@ public class DurationFormatUtils {
+ 
+         final Token[] tokens = lexx(format);
+ 
+-        long days         = 0;
+-        long hours        = 0;
+-        long minutes      = 0;
+-        long seconds      = 0;
+-        long milliseconds = 0;
++        int days         = 0;
++        int hours        = 0;
++        int minutes      = 0;
++        int seconds      = 0;
++        int milliseconds = 0;
+         
+         if (Token.containsTokenWithValue(tokens, d) ) {
+-            days = durationMillis / DateUtils.MILLIS_PER_DAY;
++            days = (int) (durationMillis / DateUtils.MILLIS_PER_DAY);
+             durationMillis = durationMillis - (days * DateUtils.MILLIS_PER_DAY);
+         }
+         if (Token.containsTokenWithValue(tokens, H) ) {
+-            hours = durationMillis / DateUtils.MILLIS_PER_HOUR;
++            hours = (int) (durationMillis / DateUtils.MILLIS_PER_HOUR);
+             durationMillis = durationMillis - (hours * DateUtils.MILLIS_PER_HOUR);
+         }
+         if (Token.containsTokenWithValue(tokens, m) ) {
+-            minutes = durationMillis / DateUtils.MILLIS_PER_MINUTE;
++            minutes = (int) (durationMillis / DateUtils.MILLIS_PER_MINUTE);
+             durationMillis = durationMillis - (minutes * DateUtils.MILLIS_PER_MINUTE);
+         }
+         if (Token.containsTokenWithValue(tokens, s) ) {
+-            seconds = durationMillis / DateUtils.MILLIS_PER_SECOND;
++            seconds = (int) (durationMillis / DateUtils.MILLIS_PER_SECOND);
+             durationMillis = durationMillis - (seconds * DateUtils.MILLIS_PER_SECOND);
+         }
+         if (Token.containsTokenWithValue(tokens, S) ) {
+-            milliseconds = durationMillis;
++            milliseconds = (int) durationMillis;
+         }
+ 
+         return format(tokens, 0, 0, days, hours, minutes, seconds, milliseconds, padWithZeros);
+@@ -411,8 +411,8 @@ public class DurationFormatUtils {
+      * @param padWithZeros  whether to pad
+      * @return the formatted string
+      */
+-    static String format(final Token[] tokens, final long years, final long months, final long days, final long hours, final long minutes, final long seconds,
+-            long milliseconds, final boolean padWithZeros) {
++    static String format(final Token[] tokens, final int years, final int months, final int days, final int hours, final int minutes, final int seconds,
++            int milliseconds, final boolean padWithZeros) {
+         final StringBuilder buffer = new StringBuilder();
+         boolean lastOutputSeconds = false;
+         final int sz = tokens.length;
+@@ -424,32 +424,40 @@ public class DurationFormatUtils {
+                 buffer.append(value.toString());
+             } else {
+                 if (value == y) {
+-                    buffer.append(paddedValue(years, padWithZeros, count));
++                    buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(years), count, '0') : Integer
++                            .toString(years));
+                     lastOutputSeconds = false;
+                 } else if (value == M) {
+-                    buffer.append(paddedValue(months, padWithZeros, count));
++                    buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(months), count, '0') : Integer
++                            .toString(months));
+                     lastOutputSeconds = false;
+                 } else if (value == d) {
+-                    buffer.append(paddedValue(days, padWithZeros, count));
++                    buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(days), count, '0') : Integer
++                            .toString(days));
+                     lastOutputSeconds = false;
+                 } else if (value == H) {
+-                    buffer.append(paddedValue(hours, padWithZeros, count));
++                    buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(hours), count, '0') : Integer
++                            .toString(hours));
+                     lastOutputSeconds = false;
+                 } else if (value == m) {
+-                    buffer.append(paddedValue(minutes, padWithZeros, count));
++                    buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(minutes), count, '0') : Integer
++                            .toString(minutes));
+                     lastOutputSeconds = false;
+                 } else if (value == s) {
+-                    buffer.append(paddedValue(seconds, padWithZeros, count));
++                    buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(seconds), count, '0') : Integer
++                            .toString(seconds));
+                     lastOutputSeconds = true;
+                 } else if (value == S) {
+                     if (lastOutputSeconds) {
+                         milliseconds += 1000;
+                         final String str = padWithZeros
+-                                ? StringUtils.leftPad(Long.toString(milliseconds), count, '0')
+-                                : Long.toString(milliseconds);
++                                ? StringUtils.leftPad(Integer.toString(milliseconds), count, '0')
++                                : Integer.toString(milliseconds);
+                         buffer.append(str.substring(1));
+                     } else {
+-                        buffer.append(paddedValue(milliseconds, padWithZeros, count));
++                        buffer.append(padWithZeros
++                                ? StringUtils.leftPad(Integer.toString(milliseconds), count, '0')
++                                : Integer.toString(milliseconds));
+                     }
+                     lastOutputSeconds = false;
+                 }
+@@ -458,12 +466,6 @@ public class DurationFormatUtils {
+         return buffer.toString();
+     }
+ 
+-    // Helper method to simplify repetive code in format method above
+-    private static String paddedValue(final long value, final boolean padWithZeros, final int count) {
+-        final String longString = Long.toString(value);
+-        return padWithZeros ? StringUtils.leftPad(longString, count, '0') : longString;
+-    }
+-
+     static final Object y = "y";
+     static final Object M = "M";
+     static final Object d = "d";

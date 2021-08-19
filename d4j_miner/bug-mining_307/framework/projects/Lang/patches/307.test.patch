@@ -1,0 +1,95 @@
+diff --git a/src/test/java/org/apache/commons/lang3/StringEscapeUtilsTest.java b/src/test/java/org/apache/commons/lang3/StringEscapeUtilsTest.java
+index 09fffe10c..e04877fa4 100644
+--- a/src/test/java/org/apache/commons/lang3/StringEscapeUtilsTest.java
++++ b/src/test/java/org/apache/commons/lang3/StringEscapeUtilsTest.java
+@@ -348,9 +348,6 @@ public class StringEscapeUtilsTest {
+ 
+         assertEquals("Supplementary character must be represented using a single escape", "&#144308;",
+                 escapeXml.translate("\uD84C\uDFB4"));
+-
+-        assertEquals("Supplementary characters mixed with basic characters should be encoded correctly", "a b c &#144308;",
+-                        escapeXml.translate("a b c \uD84C\uDFB4"));
+     }
+     
+     @Test
+@@ -380,9 +377,6 @@ public class StringEscapeUtilsTest {
+     public void testUnescapeXmlSupplementaryCharacters() {
+         assertEquals("Supplementary character must be represented using a single escape", "\uD84C\uDFB4",
+                 StringEscapeUtils.unescapeXml("&#144308;") );
+-
+-        assertEquals("Supplementary characters mixed with basic characters should be decoded correctly", "a b c \uD84C\uDFB4",
+-                StringEscapeUtils.unescapeXml("a b c &#144308;") );
+     }
+         
+     // Tests issue #38569
+@@ -402,24 +396,22 @@ public class StringEscapeUtilsTest {
+ 
+     @Test
+     public void testEscapeCsvString() throws Exception {
+-        assertEquals("foo.bar",            StringEscapeUtils.escapeCsv("foo.bar"));
+-        assertEquals("\"foo,bar\"",        StringEscapeUtils.escapeCsv("foo,bar"));
+-        assertEquals("\"foo\nbar\"",       StringEscapeUtils.escapeCsv("foo\nbar"));
+-        assertEquals("\"foo\rbar\"",       StringEscapeUtils.escapeCsv("foo\rbar"));
+-        assertEquals("\"foo\"\"bar\"",     StringEscapeUtils.escapeCsv("foo\"bar"));
+-        assertEquals("foo\uD84C\uDFB4bar", StringEscapeUtils.escapeCsv("foo\uD84C\uDFB4bar"));
++        assertEquals("foo.bar",          StringEscapeUtils.escapeCsv("foo.bar"));
++        assertEquals("\"foo,bar\"",      StringEscapeUtils.escapeCsv("foo,bar"));
++        assertEquals("\"foo\nbar\"",     StringEscapeUtils.escapeCsv("foo\nbar"));
++        assertEquals("\"foo\rbar\"",     StringEscapeUtils.escapeCsv("foo\rbar"));
++        assertEquals("\"foo\"\"bar\"",   StringEscapeUtils.escapeCsv("foo\"bar"));
+         assertEquals("",   StringEscapeUtils.escapeCsv(""));
+         assertEquals(null, StringEscapeUtils.escapeCsv(null));
+     }
+ 
+     @Test
+     public void testEscapeCsvWriter() throws Exception {
+-        checkCsvEscapeWriter("foo.bar",            "foo.bar");
+-        checkCsvEscapeWriter("\"foo,bar\"",        "foo,bar");
+-        checkCsvEscapeWriter("\"foo\nbar\"",       "foo\nbar");
+-        checkCsvEscapeWriter("\"foo\rbar\"",       "foo\rbar");
+-        checkCsvEscapeWriter("\"foo\"\"bar\"",     "foo\"bar");
+-        checkCsvEscapeWriter("foo\uD84C\uDFB4bar", "foo\uD84C\uDFB4bar");
++        checkCsvEscapeWriter("foo.bar",        "foo.bar");
++        checkCsvEscapeWriter("\"foo,bar\"",    "foo,bar");
++        checkCsvEscapeWriter("\"foo\nbar\"",   "foo\nbar");
++        checkCsvEscapeWriter("\"foo\rbar\"",   "foo\rbar");
++        checkCsvEscapeWriter("\"foo\"\"bar\"", "foo\"bar");
+         checkCsvEscapeWriter("", null);
+         checkCsvEscapeWriter("", "");
+     }
+@@ -436,12 +428,11 @@ public class StringEscapeUtilsTest {
+ 
+     @Test
+     public void testUnescapeCsvString() throws Exception {
+-        assertEquals("foo.bar",              StringEscapeUtils.unescapeCsv("foo.bar"));
+-        assertEquals("foo,bar",              StringEscapeUtils.unescapeCsv("\"foo,bar\""));
+-        assertEquals("foo\nbar",             StringEscapeUtils.unescapeCsv("\"foo\nbar\""));
+-        assertEquals("foo\rbar",             StringEscapeUtils.unescapeCsv("\"foo\rbar\""));
+-        assertEquals("foo\"bar",             StringEscapeUtils.unescapeCsv("\"foo\"\"bar\""));
+-        assertEquals("foo\uD84C\uDFB4bar",   StringEscapeUtils.unescapeCsv("foo\uD84C\uDFB4bar"));
++        assertEquals("foo.bar",          StringEscapeUtils.unescapeCsv("foo.bar"));
++        assertEquals("foo,bar",      StringEscapeUtils.unescapeCsv("\"foo,bar\""));
++        assertEquals("foo\nbar",     StringEscapeUtils.unescapeCsv("\"foo\nbar\""));
++        assertEquals("foo\rbar",     StringEscapeUtils.unescapeCsv("\"foo\rbar\""));
++        assertEquals("foo\"bar",   StringEscapeUtils.unescapeCsv("\"foo\"\"bar\""));
+         assertEquals("",   StringEscapeUtils.unescapeCsv(""));
+         assertEquals(null, StringEscapeUtils.unescapeCsv(null));
+ 
+@@ -450,12 +441,11 @@ public class StringEscapeUtilsTest {
+ 
+     @Test
+     public void testUnescapeCsvWriter() throws Exception {
+-        checkCsvUnescapeWriter("foo.bar",            "foo.bar");
+-        checkCsvUnescapeWriter("foo,bar",            "\"foo,bar\"");
+-        checkCsvUnescapeWriter("foo\nbar",           "\"foo\nbar\"");
+-        checkCsvUnescapeWriter("foo\rbar",           "\"foo\rbar\"");
+-        checkCsvUnescapeWriter("foo\"bar",           "\"foo\"\"bar\"");
+-        checkCsvUnescapeWriter("foo\uD84C\uDFB4bar", "foo\uD84C\uDFB4bar");
++        checkCsvUnescapeWriter("foo.bar",        "foo.bar");
++        checkCsvUnescapeWriter("foo,bar",    "\"foo,bar\"");
++        checkCsvUnescapeWriter("foo\nbar",   "\"foo\nbar\"");
++        checkCsvUnescapeWriter("foo\rbar",   "\"foo\rbar\"");
++        checkCsvUnescapeWriter("foo\"bar", "\"foo\"\"bar\"");
+         checkCsvUnescapeWriter("", null);
+         checkCsvUnescapeWriter("", "");
+ 

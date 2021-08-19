@@ -1,0 +1,17 @@
+diff --git a/src/test/java/org/apache/commons/lang3/math/NumberUtilsTest.java b/src/test/java/org/apache/commons/lang3/math/NumberUtilsTest.java
+index d211b6c49..9b52ac6de 100644
+--- a/src/test/java/org/apache/commons/lang3/math/NumberUtilsTest.java
++++ b/src/test/java/org/apache/commons/lang3/math/NumberUtilsTest.java
+@@ -1225,12 +1225,6 @@ public class NumberUtilsTest {
+         compareIsNumberWithCreateNumber("1.1L", false); // LANG-664
+     }
+ 
+-    @Test
+-    public void testLANG972() {
+-        compareIsNumberWithCreateNumber("0xABCD", true);
+-        compareIsNumberWithCreateNumber("0XABCD", true);
+-    }
+-
+     private void compareIsNumberWithCreateNumber(final String val, final boolean expected) {
+         final boolean isValid = NumberUtils.isNumber(val);
+         final boolean canCreate = checkCreateNumber(val);

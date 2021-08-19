@@ -1,0 +1,105 @@
+diff --git a/src/main/java/org/apache/commons/lang3/time/FastDateParser.java b/src/main/java/org/apache/commons/lang3/time/FastDateParser.java
+index bdde1d278..00d8044ff 100644
+--- a/src/main/java/org/apache/commons/lang3/time/FastDateParser.java
++++ b/src/main/java/org/apache/commons/lang3/time/FastDateParser.java
+@@ -513,10 +513,6 @@ public class FastDateParser implements DateParser, Serializable {
+         case 'y':
+             return formatField.length()>2 ?LITERAL_YEAR_STRATEGY :ABBREVIATED_YEAR_STRATEGY;
+         case 'Z':
+-            if (formatField.equals("ZZ")) {
+-                return ISO_8601_STRATEGY;
+-            }
+-            //$FALL-THROUGH$
+         case 'z':
+             return getLocaleSpecificStrategy(Calendar.ZONE_OFFSET, definingCalendar);
+         }
+@@ -818,32 +814,6 @@ public class FastDateParser implements DateParser, Serializable {
+             cal.setTimeZone(tz);
+         }
+     }
+-    
+-    private static class ISO8601TimeZoneStrategy extends Strategy {
+-        // Z, +hh, -hh, +hhmm, -hhmm, +hh:mm or -hh:mm 
+-        private static final String PATTERN = "(Z|(?:[+-]\\d{2}(?::?\\d{2})?))";
+-        
+-        /**
+-         * {@inheritDoc}
+-         */
+-        @Override
+-        boolean addRegex(FastDateParser parser, StringBuilder regex) {
+-            regex.append(PATTERN);
+-            return true;
+-        }
+-        
+-        /**
+-         * {@inheritDoc}
+-         */
+-        @Override
+-        void setCalendar(FastDateParser parser, Calendar cal, String value) {
+-            if (value.equals("Z")) {
+-                cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+-            } else {
+-                cal.setTimeZone(TimeZone.getTimeZone("GMT" + value));
+-            }
+-        }
+-    }
+ 
+     private static final Strategy NUMBER_MONTH_STRATEGY = new NumberStrategy(Calendar.MONTH) {
+         @Override
+@@ -874,5 +844,4 @@ public class FastDateParser implements DateParser, Serializable {
+     private static final Strategy MINUTE_STRATEGY = new NumberStrategy(Calendar.MINUTE);
+     private static final Strategy SECOND_STRATEGY = new NumberStrategy(Calendar.SECOND);
+     private static final Strategy MILLISECOND_STRATEGY = new NumberStrategy(Calendar.MILLISECOND);
+-    private static final Strategy ISO_8601_STRATEGY = new ISO8601TimeZoneStrategy();
+ }
+diff --git a/src/main/java/org/apache/commons/lang3/time/FastDatePrinter.java b/src/main/java/org/apache/commons/lang3/time/FastDatePrinter.java
+index 3701b39c8..2f2bafd9e 100644
+--- a/src/main/java/org/apache/commons/lang3/time/FastDatePrinter.java
++++ b/src/main/java/org/apache/commons/lang3/time/FastDatePrinter.java
+@@ -274,8 +274,6 @@ public class FastDatePrinter implements DatePrinter, Serializable {
+             case 'Z': // time zone (value)
+                 if (tokenLen == 1) {
+                     rule = TimeZoneNumberRule.INSTANCE_NO_COLON;
+-                } else if (tokenLen == 2) {
+-                    rule = TimeZoneNumberRule.INSTANCE_ISO_8601;
+                 } else {
+                     rule = TimeZoneNumberRule.INSTANCE_COLON;
+                 }
+@@ -1175,22 +1173,18 @@ public class FastDatePrinter implements DatePrinter, Serializable {
+      * or {@code +/-HH:MM}.</p>
+      */
+     private static class TimeZoneNumberRule implements Rule {
+-        static final TimeZoneNumberRule INSTANCE_COLON = new TimeZoneNumberRule(true, false);
+-        static final TimeZoneNumberRule INSTANCE_NO_COLON = new TimeZoneNumberRule(false, false);
+-        static final TimeZoneNumberRule INSTANCE_ISO_8601 = new TimeZoneNumberRule(true, true);
++        static final TimeZoneNumberRule INSTANCE_COLON = new TimeZoneNumberRule(true);
++        static final TimeZoneNumberRule INSTANCE_NO_COLON = new TimeZoneNumberRule(false);
+ 
+         final boolean mColon;
+-        final boolean mISO8601;
+ 
+         /**
+          * Constructs an instance of {@code TimeZoneNumberRule} with the specified properties.
+          *
+          * @param colon add colon between HH and MM in the output if {@code true}
+-         * @param iso8601 create an ISO 8601 format output
+          */
+-        TimeZoneNumberRule(final boolean colon, final boolean iso8601) {
++        TimeZoneNumberRule(final boolean colon) {
+             mColon = colon;
+-            mISO8601 = iso8601;
+         }
+ 
+         /**
+@@ -1206,11 +1200,6 @@ public class FastDatePrinter implements DatePrinter, Serializable {
+          */
+         @Override
+         public void appendTo(final StringBuffer buffer, final Calendar calendar) {
+-            if (mISO8601 && calendar.getTimeZone().getID().equals("UTC")) {
+-                buffer.append("Z");
+-                return;
+-            }
+-            
+             int offset = calendar.get(Calendar.ZONE_OFFSET) + calendar.get(Calendar.DST_OFFSET);
+ 
+             if (offset < 0) {

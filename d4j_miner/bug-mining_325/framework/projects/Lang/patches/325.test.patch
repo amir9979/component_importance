@@ -1,0 +1,86 @@
+diff --git a/src/test/java/org/apache/commons/lang3/time/DateFormatUtilsTest.java b/src/test/java/org/apache/commons/lang3/time/DateFormatUtilsTest.java
+index 3b0d11fa4..2d8984218 100644
+--- a/src/test/java/org/apache/commons/lang3/time/DateFormatUtilsTest.java
++++ b/src/test/java/org/apache/commons/lang3/time/DateFormatUtilsTest.java
+@@ -17,13 +17,10 @@
+ package org.apache.commons.lang3.time;
+ 
+ import org.junit.Test;
+-
+ import static org.junit.Assert.*;
+-
+ import java.lang.reflect.Constructor;
+ import java.lang.reflect.Modifier;
+ import java.util.Calendar;
+-import java.util.Date;
+ import java.util.Locale;
+ import java.util.TimeZone;
+ 
+@@ -106,7 +103,7 @@ public class DateFormatUtilsTest {
+     }
+     
+     @Test
+-    public void testDateTimeISO() throws Exception {
++    public void testDateTimeISO(){
+         final TimeZone timeZone = TimeZone.getTimeZone("GMT-3");
+         final Calendar cal = Calendar.getInstance(timeZone);
+         cal.set(2002,1,23,9,11,12);
+@@ -127,14 +124,6 @@ public class DateFormatUtilsTest {
+         assertEquals("2002-02-23T09:11:12-03:00", text);
+         text = DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.format(cal);
+         assertEquals("2002-02-23T09:11:12-03:00", text);
+-        
+-        Calendar utcCal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+-        utcCal.set(2002, 1, 23, 9, 11, 12);
+-        utcCal.set(Calendar.MILLISECOND, 0);
+-        text = DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.format(utcCal);
+-        assertEquals("2002-02-23T09:11:12Z", text);
+-        Date date = DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.parse(text);
+-        assertEquals(utcCal.getTime(), date);
+     }
+ 
+     @Test
+@@ -260,9 +249,4 @@ public class DateFormatUtilsTest {
+     }
+     */
+ 
+-    @Test
+-    public void testLANG1000() throws Exception {
+-        String date = "2013-11-18T12:48:05Z";
+-        DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.parse(date);
+-    }
+ }
+diff --git a/src/test/java/org/apache/commons/lang3/time/FastDatePrinterTest.java b/src/test/java/org/apache/commons/lang3/time/FastDatePrinterTest.java
+index 5b7fc257d..eeca7c21d 100644
+--- a/src/test/java/org/apache/commons/lang3/time/FastDatePrinterTest.java
++++ b/src/test/java/org/apache/commons/lang3/time/FastDatePrinterTest.java
+@@ -16,7 +16,10 @@
+  */
+ package org.apache.commons.lang3.time;
+ 
+-import static org.junit.Assert.*;
++import static org.junit.Assert.assertNotNull;
++import static org.junit.Assert.assertEquals;
++import static org.junit.Assert.assertFalse;
++import static org.junit.Assert.assertTrue;
+ 
+ import java.io.Serializable;
+ import java.text.SimpleDateFormat;
+@@ -283,17 +286,4 @@ public class FastDatePrinterTest {
+         final String actualValue = FastDateFormat.getInstance(pattern).format(cal);
+         assertEquals(expectedValue, actualValue);
+     }
+-    
+-    @Test
+-    public void testTimeZoneAsZ() throws Exception {
+-        Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+-        FastDateFormat noColonFormat = FastDateFormat.getInstance("Z");
+-        assertEquals("+0000", noColonFormat.format(c));
+-        
+-        FastDateFormat isoFormat = FastDateFormat.getInstance("ZZ");
+-        assertEquals("Z", isoFormat.format(c));
+-        
+-        FastDateFormat colonFormat = FastDateFormat.getInstance("ZZZ");
+-        assertEquals("+00:00", colonFormat.format(c));
+-    }
+ }

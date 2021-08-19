@@ -1,0 +1,14 @@
+diff --git a/src/main/java/org/apache/commons/lang3/math/NumberUtils.java b/src/main/java/org/apache/commons/lang3/math/NumberUtils.java
+index 7db1f4e1e..ee26f2e23 100644
+--- a/src/main/java/org/apache/commons/lang3/math/NumberUtils.java
++++ b/src/main/java/org/apache/commons/lang3/math/NumberUtils.java
+@@ -1364,8 +1364,7 @@ public class NumberUtils {
+                     }
+                 }
+                 return true;
+-           } else if (Character.isDigit(chars[start + 1])) {
+-               // leading 0, but not hex, must be octal
++           } else { // leading 0, but not hex, must be octal
+                int i = start + 1;
+                for (; i < chars.length; i++) {
+                    if (chars[i] < '0' || chars[i] > '7') {

@@ -1,0 +1,21 @@
+diff --git a/src/main/java/org/apache/commons/lang3/time/DurationFormatUtils.java b/src/main/java/org/apache/commons/lang3/time/DurationFormatUtils.java
+index 57c637379..f8b9d92d2 100644
+--- a/src/main/java/org/apache/commons/lang3/time/DurationFormatUtils.java
++++ b/src/main/java/org/apache/commons/lang3/time/DurationFormatUtils.java
+@@ -442,10 +442,12 @@ public class DurationFormatUtils {
+                     buffer.append(paddedValue(seconds, padWithZeros, count));
+                     lastOutputSeconds = true;
+                 } else if (value == S) {
+-                    if (lastOutputSeconds) { 
+-                        // ensure at least 3 digits are displayed even if padding is not selected
+-                        int width = padWithZeros ? Math.max(3, count) : 3;
+-                        buffer.append(paddedValue(milliseconds, true, width));
++                    if (lastOutputSeconds) {
++                        milliseconds += 1000;
++                        final String str = padWithZeros
++                                ? StringUtils.leftPad(Long.toString(milliseconds), count, '0')
++                                : Long.toString(milliseconds);
++                        buffer.append(str.substring(1));
+                     } else {
+                         buffer.append(paddedValue(milliseconds, padWithZeros, count));
+                     }

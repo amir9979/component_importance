@@ -1,0 +1,36 @@
+diff --git a/src/main/java/org/apache/commons/lang3/reflect/ConstructorUtils.java b/src/main/java/org/apache/commons/lang3/reflect/ConstructorUtils.java
+index 5eca29439..641c39b4c 100644
+--- a/src/main/java/org/apache/commons/lang3/reflect/ConstructorUtils.java
++++ b/src/main/java/org/apache/commons/lang3/reflect/ConstructorUtils.java
+@@ -217,7 +217,7 @@ public class ConstructorUtils {
+     public static <T> Constructor<T> getAccessibleConstructor(final Constructor<T> ctor) {
+         Validate.notNull(ctor, "constructor cannot be null");
+         return MemberUtils.isAccessible(ctor)
+-                && isAccessible(ctor.getDeclaringClass()) ? ctor : null;
++                && Modifier.isPublic(ctor.getDeclaringClass().getModifiers()) ? ctor : null;
+     }
+ 
+     /**
+@@ -279,22 +279,4 @@ public class ConstructorUtils {
+         return result;
+     }
+ 
+-    /**
+-     * Learn whether the specified class is generally accessible, i.e. is
+-     * declared in an entirely {@code public} manner.
+-     * @param type to check
+-     * @return {@code true} if {@code type} and any enclosing classes are
+-     *         {@code public}.
+-     */
+-    private static boolean isAccessible(final Class<?> type) {
+-        Class<?> cls = type;
+-        while (cls != null) {
+-            if (!Modifier.isPublic(cls.getModifiers())) {
+-                return false;
+-            }
+-            cls = cls.getEnclosingClass();
+-        }
+-        return true;
+-    }
+-
+ }
