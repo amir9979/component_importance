@@ -33,7 +33,8 @@ class D4JReproducer(Reproducer):
 
     @staticmethod
     def read_commit_db(dir_path, project='Lang'):
-        d4j = json.load(open(D4JReproducer.D4J_JSON))
+        with open(D4JReproducer.D4J_JSON) as f:
+            d4j = json.load(f)
         project_data = dict(list(map(lambda x: (str(x['bugId']), x), filter(lambda x: x['project'].lower() == project.lower(), d4j))))
         projects = []
         with open(os.path.join(D4JReproducer.D4J_DIR, project, "commit-db")) as f:
