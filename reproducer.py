@@ -34,7 +34,7 @@ class Reproducer(object):
         self.surefire_tests = []
         self.tests_to_trace = []
         self.test_traces = []
-        self.optimized_traces = []
+        self.optimized_traces = {}
         self.bugs = []
         self.failing_tests = failing_tests
 
@@ -69,6 +69,9 @@ class Reproducer(object):
         repo = Repo(self.get_dir_id().clones)
         self.surefire_tests = repo.observe_tests()
 
+    def set_surefire_tests(self, tests):
+        self.surefire_tests = tests
+
     def clean_execution(self):
         repo = Repo(self.get_dir_id().clones)
         build_report = repo.install()
@@ -86,12 +89,18 @@ class Reproducer(object):
         traces = list(repo.run_under_jcov(self.get_dir_id().traces, False, instrument_only_methods=True, short_type=True, tests_to_run=tests, check_comp_error=False))
         self.test_traces = dict(list(map(lambda t: (t.test_name, t), traces)))
 
+    def set_traces(self, traces):
+        self.test_traces = traces
+
     def get_optimized_traces(self):
         all_tests = list(filter(lambda x: x, list(map(self.test_traces.get, self.tests_to_trace))))
         fail_tests = list(filter(lambda test: self.get_surefire_tests()[test.test_name].outcome in self.get_non_pass_outcomes(), all_tests))
         fail_components = reduce(set.__or__, list(map(lambda test: set(test.get_trace()), fail_tests)), set())
         self.optimized_traces = dict(list(map(lambda t: (t.test_name, t),
                                               list(filter(lambda test: fail_components & set(test.get_trace()), all_tests)))))
+
+    def set_optimized_traces(self, traces):
+        self.optimized_traces = traces
 
     def get_failing_tests_as_surefire_tests(self):
         failing_tests = []
@@ -122,6 +131,9 @@ class Reproducer(object):
         if self.tests_to_trace:
             return True
         raise Exception("no tests to trace")
+
+    def set_tests_to_trace(self, tests):
+        self.tests_to_trace = tests
 
     def get_non_pass_outcomes(self):
         return ['failure', 'error']

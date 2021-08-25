@@ -20,7 +20,7 @@ class D4JReproducer(Reproducer):
 
     def apply_patch(self):
         repo = git.Repo(self.get_dir_id().clones)
-        test_patch = os.path.join(self.get_patches_dir(), self.get_id()) + ".src.patch"
+        test_patch = os.path.join(self.get_patches_dir(), str(self.get_id())) + ".src.patch"
         if os.path.exists(test_patch):
             repo.git.apply(test_patch)
 
