@@ -33,7 +33,7 @@ class D4JReproducer(Reproducer):
         Popen(['git', '-C', self.get_dir_id().clones, "checkout", self.fixed]).wait()
 
     def extract_buggy_functions(self):
-        return list(map(lambda x: x.split("@")[1].lower().replace(',', ';'), javadiff.diff.get_modified_functions(self.get_dir_id().clones)))
+        return list(map(lambda x: x.split("@")[1].lower().replace(',', ';'), d.get_modified_functions(self.get_dir_id().clones)))
 
     @staticmethod
     def read_commit_db(dir_path, project='Lang'):
