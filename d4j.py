@@ -4,7 +4,11 @@ import git
 import os
 from subprocess import Popen
 from dir_structure import DirStructure, DirId
-import javadiff.diff
+try:
+    import javadiff.diff as d
+except:
+    import javadiff.javadiff.diff as d
+
 import sys
 from reproducer import Reproducer
 from subprocess import Popen
