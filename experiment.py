@@ -134,6 +134,8 @@ class ExperimentMatrix(object):
 if __name__ == "__main__":
     # ExperimentMatrix.experiment_classifiers(DirId(DirStructure(r"C:\amirelm\component_importnace\data\maven_3"), sys.argv[1]))
     # exit()
-    ExperimentMatrix.experiment_classifiers(DirId(DirStructure(sys.argv[1]), sys.argv[2]))
+    # ExperimentMatrix.experiment_classifiers(DirId(DirStructure(sys.argv[1]), sys.argv[2]))
+    DIR_BASE_PATH = r"component_importance_data"
+    Experiment(DirStructure(DIR_BASE_PATH)).experiment()
     # Experiment(DirStructure(r"Z:\component_importance\TIKA")).experiment()
     # pass

@@ -8,9 +8,11 @@ import pandas as pd
 import json
 import shutil
 from jcov_parser import JcovParser
+from experiment import ExperimentMatrix
 import xml.etree.cElementTree as et
 et.register_namespace('', "http://maven.apache.org/POM/4.0.0")
 et.register_namespace('xsi', "http://www.w3.org/2001/XMLSchema-instance")
+DIR_BASE_PATH = r"component_importance_data"
 
 
 class TestResult(object):
@@ -92,7 +94,7 @@ class D4JMining(D4JReproducer):
         shutil.copyfile(self.matrix, self.get_dir_id().matrices)
 
     @staticmethod
-    def read_data_dir(dir_path, ind):
+    def read_data_dir(ind, dir_path=DIR_BASE_PATH):
         bug_mining = os.path.join(os.path.join(D4JMining.D4J_DIR, D4JMining.D4J_PREFIX + ind), 'framework', 'projects')
         bug_mining = os.path.abspath(os.path.join(bug_mining, os.listdir(bug_mining)[0]))
         active_bugs = os.path.join(bug_mining, "active-bugs.csv")
@@ -109,9 +111,13 @@ class D4JMining(D4JReproducer):
 
 
 if __name__ == "__main__":
-    project = D4JMining.read_data_dir(sys.argv[1], sys.argv[2])
+    dir_path = sys.argv[2]
+    if sys.argv[2] == 'base':
+        dir_path = DIR_BASE_PATH
+    project = D4JMining.read_data_dir(sys.argv[1], dir_path)
     if len(sys.argv) == 3:
         project.do_all()
     else:
         project.get_training_set()
+        ExperimentMatrix.experiment_classifiers(project.get_dir_id())
 
