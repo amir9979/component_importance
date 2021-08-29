@@ -110,7 +110,7 @@ class LearningClassify(InfluenceClassify):
         from sklearn.ensemble import ExtraTreesClassifier
         from sklearn.feature_selection import VarianceThreshold
         return [LearningClassify(dir_id, RandomForestClassifier(n_estimators=10, random_state=42)),
-                LearningClassify(dir_id, GradientBoostingClassifier()),
+                # LearningClassify(dir_id, GradientBoostingClassifier()),
                 LearningClassify(dir_id, DecisionTreeClassifier()),
                 #LearningClassify(dir_id, MLPClassifier(solver='adam', alpha=1e-5, activation='relu', max_iter=3000, hidden_layer_sizes=(30, 30, 30, 30, 30), random_state=13)),
                 LearningClassify(dir_id, LogisticRegression()),
