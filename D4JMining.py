@@ -102,8 +102,8 @@ class D4JMining(D4JReproducer):
             json.dump(traces, f)
 
     @staticmethod
-    def read_data_dir(ind, dir_path=DIR_BASE_PATH):
-        bug_mining = os.path.join(os.path.join(D4JMining.D4J_DIR, D4JMining.D4J_PREFIX + ind), 'framework', 'projects')
+    def read_data_dir(ind, project_name, dir_path=DIR_BASE_PATH):
+        bug_mining = os.path.join(os.path.join(D4JMining.D4J_DIR, project_name, D4JMining.D4J_PREFIX + ind), 'framework', 'projects')
         bug_mining = os.path.abspath(os.path.join(bug_mining, os.listdir(bug_mining)[0]))
         active_bugs = os.path.join(bug_mining, "active-bugs.csv")
         trigger_tests = os.path.join(bug_mining, "trigger_tests")
@@ -120,10 +120,11 @@ class D4JMining(D4JReproducer):
 
 if __name__ == "__main__":
     dir_path = sys.argv[2]
+    project_name = sys.argv[3]
     if sys.argv[2] == 'base':
         dir_path = DIR_BASE_PATH
-    project = D4JMining.read_data_dir(sys.argv[1], dir_path)
-    if len(sys.argv) == 3:
+    project = D4JMining.read_data_dir(sys.argv[1], project_name, dir_path)
+    if len(sys.argv) == 4:
         project.do_all()
     else:
         project.get_training_set()
