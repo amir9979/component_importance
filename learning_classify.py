@@ -205,6 +205,7 @@ class LearningClassify(InfluenceClassify):
         #
         # scoring["mse"] = metrics.make_scorer(mse, needs_proba=True)
         # scoring["mse1"] = metrics.make_scorer(mse1, needs_proba=True)
+        self.get_classifier().fit(self.get_training_featues(), self.get_training_labels())
         scores = cross_validate(self.get_classifier(), self.get_training_featues(), self.get_training_labels(), cv=3, scoring=scoring, return_train_score=True)
         all_scores = dict()
         for score in scores:
