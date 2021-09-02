@@ -100,21 +100,20 @@ class ExperimentMatrix(object):
             return
         if not self.bugs:
             return
-        if not os.path.exists(self.dir_id.experiments):
-            results = dict()
-            with open(self.dir_id.matrices) as f:
-                json_matrix = json.loads(f.read())
-            for alpha in ExperimentMatrix.ALPHA_RANGE:
-                for matrix_name, influence_data in self.generate_influence_data(alpha):
-                    matrix = copy.deepcopy(json_matrix)
-                    matrix.update(influence_data)
-                    with open(os.path.join(self.dir_id.experiment_matrices, matrix_name + str(alpha)), "w") as f:
-                        json.dump(matrix, f)
-                    ei = read_json_planning_instance(matrix)
-                    ei.diagnose()
-                    results.setdefault(matrix_name, dict())[alpha] = Diagnosis_Results(ei.diagnoses, ei.initial_tests, ei.error).metrics
-            with open(self.dir_id.experiments, "w") as f:
-                json.dump(results, f)
+        results = dict()
+        with open(self.dir_id.matrices) as f:
+            json_matrix = json.loads(f.read())
+        for alpha in ExperimentMatrix.ALPHA_RANGE:
+            for matrix_name, influence_data in self.generate_influence_data(alpha):
+                matrix = copy.deepcopy(json_matrix)
+                matrix.update(influence_data)
+                with open(os.path.join(self.dir_id.experiment_matrices, matrix_name + str(alpha)), "w") as f:
+                    json.dump(matrix, f)
+                ei = read_json_planning_instance(matrix)
+                ei.diagnose()
+                results.setdefault(matrix_name, dict())[alpha] = Diagnosis_Results(ei.diagnoses, ei.initial_tests, ei.error).metrics
+        with open(self.dir_id.experiments, "w") as f:
+            json.dump(results, f)
         with open(self.dir_id.experiments) as f:
             return json.loads(f.read())
 

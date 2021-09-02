@@ -93,6 +93,14 @@ class D4JMining(D4JReproducer):
     def save_as_sfl_matrix(self):
         shutil.copyfile(self.matrix, self.get_dir_id().matrices)
 
+    def save_traces(self):
+        with open(self.matrix) as m:
+            j = json.load(m)
+        names = dict(j["components_names"])
+        traces = dict(map(lambda x: (x[0], list(map(names.get, x[1]))), j['tests_details']))
+        with open(self.get_dir_id().traces_json, "w") as f:
+            json.dump(traces, f)
+
     @staticmethod
     def read_data_dir(ind, dir_path=DIR_BASE_PATH):
         bug_mining = os.path.join(os.path.join(D4JMining.D4J_DIR, D4JMining.D4J_PREFIX + ind), 'framework', 'projects')
