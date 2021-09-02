@@ -52,4 +52,4 @@ class DirId(object):
         return os.path.exists(self.mark)
 
     def cleanup(self):
-        shutil.rmtree(self.clones)
+        shutil.rmtree(self.clones, ignore_errors=True)
