@@ -150,7 +150,7 @@ cmake-build-*/
 
 # IntelliJ
 out/
-
+component_importance_data/
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 
