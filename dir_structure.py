@@ -1,5 +1,7 @@
 import os
 import time
+import shutil
+
 
 class DirStructure(object):
     DIRS = ["clones", "mvn_outputs", "matrices", "traces", "traces_json", "call_graphs", "execution_graphs",
@@ -48,3 +50,6 @@ class DirId(object):
 
     def is_marked(self):
         return os.path.exists(self.mark)
+
+    def cleanup(self):
+        shutil.rmtree(self.clones)

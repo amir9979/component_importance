@@ -299,6 +299,8 @@ class Reproducer(object):
         self.dump()
         self.data_extraction()
         FeatureExtraction(self.get_dir_id()).extract()
+        self.get_dir_id().cleanup()
+
 
     def get_training_set(self):
         FeatureExtraction(self.get_dir_id()).get_training_set()
