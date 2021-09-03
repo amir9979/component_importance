@@ -135,6 +135,7 @@ if __name__ == "__main__":
         else:
             project.get_training_set()
             ExperimentMatrix.experiment_classifiers(project.get_dir_id())
-    except:
-        pass
+            project.cleanup()
+    except Exception as e:
+        print(e)
 
