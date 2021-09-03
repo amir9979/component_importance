@@ -105,7 +105,7 @@ class D4JMining(D4JReproducer):
     def read_data_dir(ind, project_name, dir_path=DIR_BASE_PATH):
         bug_mining = os.path.join(D4JMining.D4J_DIR, project_name)
         ind = int(ind)
-        if len(os.listdir(bug_mining)) > ind:
+        if len(os.listdir(bug_mining)) <= ind:
             raise Exception('no such ind')
         bug_mining = os.path.join(bug_mining, os.listdir(bug_mining)[ind], 'framework', 'projects')
         bug_mining = os.path.abspath(os.path.join(bug_mining, os.listdir(bug_mining)[0]))
