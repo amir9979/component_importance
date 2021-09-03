@@ -107,13 +107,14 @@ class D4JMining(D4JReproducer):
         ind = int(ind)
         if len(os.listdir(bug_mining)) <= ind:
             raise Exception('no such ind')
+        project_ind = int(os.listdir(bug_mining)[ind].replace(D4JMining.D4J_PREFIX, ''))
         bug_mining = os.path.join(bug_mining, os.listdir(bug_mining)[ind], 'framework', 'projects')
         bug_mining = os.path.abspath(os.path.join(bug_mining, os.listdir(bug_mining)[0]))
         active_bugs = os.path.join(bug_mining, "active-bugs.csv")
         trigger_tests = os.path.join(bug_mining, "trigger_tests")
         path_to_trigger_tests = os.path.join(trigger_tests, os.listdir(trigger_tests)[0])
         df = pd.read_csv(active_bugs)
-        bug_row = df[df['bug.id'] == ind]
+        bug_row = df[df['bug.id'] == project_ind]
         id, fixed = list(bug_row[["bug.id", "revision.id.fixed"]].iterrows())[0][1].to_list()
         failing_tests = []
         with open(path_to_trigger_tests) as f:
