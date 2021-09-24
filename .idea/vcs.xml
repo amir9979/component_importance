@@ -2,6 +2,9 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/component_importance_data/clones/19" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/component_importance_data/clones/28" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/component_importance_data/clones/29" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/mvnpy" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/sfl" vcs="Git" />
   </component>

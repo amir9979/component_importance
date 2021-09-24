@@ -81,40 +81,35 @@ class FeatureExtraction(object):
         self.get_testing_set()
 
     def get_training_set(self):
-        csv_header = ["test_name", "function_name"]
         csv_data = []
         features_header_added = False
         for matrix_id in os.listdir(self.dir_id.dir_structure.mark):
             dir_id = DirId(self.dir_id.dir_structure, matrix_id)
             if not os.path.exists(dir_id.labeled_data):
+                print(f"{dir_id.labeled_data} is not exists")
                 continue
             with open(dir_id.labeled_data) as f:
                 data = json.loads(f.read())
-            for test in data:
-                for function in data[test]:
-                    features_header = sorted(data[test][function].keys())
-                    if not features_header_added:
-                        csv_header += features_header
-                        csv_data.append(csv_header)
-                        features_header_added = True
-                    csv_data.append([test, function] + list(map(data[test][function].get, features_header)))
+            csv_data.extend(self.get_features(data, features_header_added))
+            features_header_added = True
         with open(self.dir_id.training_set, "w") as f:
             csv.writer(f).writerows(csv_data)
 
-    def get_testing_set(self):
-        with open(self.dir_id.unlabeled_data) as f:
-            data = json.loads(f.read())
-        csv_header = ["test_name", "function_name"]
+    def get_features(self, data, features_header_added):
         csv_data = []
-        features_header_added = False
         for test in data:
             for function in data[test]:
                 features_header = sorted(data[test][function].keys())
                 if not features_header_added:
-                    csv_header += features_header
-                    csv_data.append(csv_header)
+                    csv_data.append(["test_name", "function_name"] + features_header)
                     features_header_added = True
                 csv_data.append([test, function] + list(map(data[test][function].get, features_header)))
+        return csv_data
+
+    def get_testing_set(self):
+        with open(self.dir_id.unlabeled_data) as f:
+            data = json.loads(f.read())
+        csv_data = self.get_features(data, False)
         with open(self.dir_id.testing_set, "w") as f:
             csv.writer(f).writerows(csv_data)
 
