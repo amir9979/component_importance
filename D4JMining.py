@@ -99,6 +99,8 @@ class D4JMining(D4JReproducer):
             j = json.load(m)
         names = dict(j["components_names"])
         traces = dict(map(lambda x: (x[0], list(map(names.get, x[1]))), j['tests_details']))
+        if not traces:
+            return
         with open(self.get_dir_id().traces_json, "w") as f:
             json.dump(traces, f)
 
@@ -149,7 +151,7 @@ if __name__ == "__main__":
     else: # 3
         for project in D4JMining.get_all_projects(project_name, dir_path).values():
             try:
-                if not project.is_marked():
+                if not os.path.exists(project.get_dir_id().traces_json):
                     continue
                 project.get_training_set()
                 ExperimentMatrix.experiment_classifiers(project.get_dir_id())

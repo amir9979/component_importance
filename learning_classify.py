@@ -215,13 +215,8 @@ class LearningClassify(InfluenceClassify):
             json.dump(all_scores, f)
 
     def _describe_helper(self, dir_name, array):
-        try:
-            pd.DataFrame(array).describe().to_csv(getattr(self.get_dir_id(), dir_name))
-        except Exception as e:
-            print(e)
+        pd.DataFrame(array).describe().to_csv(getattr(self.get_dir_id(), dir_name))
 
     def describe(self):
         self._describe_helper("training_describe", self.get_training_featues())
         self._describe_helper("testing_describe", self.get_testing_featues())
-
-
