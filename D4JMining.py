@@ -102,40 +102,49 @@ class D4JMining(D4JReproducer):
             json.dump(traces, f)
 
     @staticmethod
+    def get_all_projects(project_name, dir_path=DIR_BASE_PATH):
+        projects = {}
+        bug_mining = os.path.join(D4JMining.D4J_DIR, project_name)
+        for dir_name in os.listdir(bug_mining):
+            project_ind = int(dir_name.replace(D4JMining.D4J_PREFIX, ''))
+            bug_mining = os.path.join(bug_mining, dir_name, 'framework', 'projects')
+            bug_mining = os.path.abspath(os.path.join(bug_mining, os.listdir(bug_mining)[0]))
+            active_bugs = os.path.join(bug_mining, "active-bugs.csv")
+            trigger_tests = os.path.join(bug_mining, "trigger_tests")
+            path_to_trigger_tests = os.path.join(trigger_tests, os.listdir(trigger_tests)[0])
+            df = pd.read_csv(active_bugs)
+            bug_row = df[df['bug.id'] == project_ind]
+            id, fixed = list(bug_row[["bug.id", "revision.id.fixed"]].iterrows())[0][1].to_list()
+            failing_tests = []
+            with open(path_to_trigger_tests) as f:
+                failing_tests = list(
+                    map(lambda x: x[4:-1].replace('::', '.').lower(), filter(lambda l: l.startswith('---'), f.readlines())))
+            projects[project_ind] = D4JMining(id, fixed, failing_tests, DirId(DirStructure(dir_path), str(id)), bug_mining)
+        return projects
+
+    @staticmethod
     def read_data_dir(ind, project_name, dir_path=DIR_BASE_PATH):
         bug_mining = os.path.join(D4JMining.D4J_DIR, project_name)
         ind = int(ind)
         if len(os.listdir(bug_mining)) <= ind:
             raise Exception('no such ind')
         project_ind = int(os.listdir(bug_mining)[ind].replace(D4JMining.D4J_PREFIX, ''))
-        bug_mining = os.path.join(bug_mining, os.listdir(bug_mining)[ind], 'framework', 'projects')
-        bug_mining = os.path.abspath(os.path.join(bug_mining, os.listdir(bug_mining)[0]))
-        active_bugs = os.path.join(bug_mining, "active-bugs.csv")
-        trigger_tests = os.path.join(bug_mining, "trigger_tests")
-        path_to_trigger_tests = os.path.join(trigger_tests, os.listdir(trigger_tests)[0])
-        df = pd.read_csv(active_bugs)
-        bug_row = df[df['bug.id'] == project_ind]
-        id, fixed = list(bug_row[["bug.id", "revision.id.fixed"]].iterrows())[0][1].to_list()
-        failing_tests = []
-        with open(path_to_trigger_tests) as f:
-            failing_tests = list(
-                map(lambda x: x[4:-1].replace('::', '.').lower(), filter(lambda l: l.startswith('---'), f.readlines())))
-        return D4JMining(id, fixed, failing_tests, DirId(DirStructure(dir_path), str(id)), bug_mining)
+        return D4JMining.get_all_projects(project_name, dir_path)[project_ind]
 
 
 if __name__ == "__main__":
-    dir_path = sys.argv[2]
-    project_name = sys.argv[3]
+    dir_path = sys.argv[1]
+    project_name = sys.argv[2]
     if sys.argv[2] == 'base':
         dir_path = DIR_BASE_PATH
-    project = D4JMining.read_data_dir(sys.argv[1], project_name, dir_path)
     try:
         if len(sys.argv) == 4:
-            project.do_all()
-        else:
-            project.get_training_set()
-            ExperimentMatrix.experiment_classifiers(project.get_dir_id())
-            project.cleanup()
+            project = D4JMining.read_data_dir(sys.argv[3], project_name, dir_path).do_all()
+        else: # 3
+            for project in D4JMining.get_all_projects(project_name, dir_path).values():
+                project.get_training_set()
+                ExperimentMatrix.experiment_classifiers(project.get_dir_id())
+                project.cleanup()
     except Exception as e:
         print(e)
 
