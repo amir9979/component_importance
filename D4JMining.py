@@ -3,6 +3,7 @@ from d4j import D4JReproducer
 from dir_structure import DirStructure, DirId
 from reproducer import Reproducer
 import os
+import traceback
 import sys
 import pandas as pd
 import json
@@ -152,5 +153,6 @@ if __name__ == "__main__":
                 ExperimentMatrix.experiment_classifiers(project.get_dir_id())
                 project.cleanup()
             except Exception as e:
+                traceback.print_exc()
                 print(e)
 
