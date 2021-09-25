@@ -147,7 +147,13 @@ if __name__ == "__main__":
     if dir_path == 'base':
         dir_path = DIR_BASE_PATH
     if len(sys.argv) == 4:
-        project = D4JMining.read_data_dir(sys.argv[3], project_name, dir_path).do_all()
+        project = D4JMining.read_data_dir(sys.argv[3], project_name, dir_path)
+        try:
+            project.do_all()
+        except Exception as e:
+            pass
+        finally:
+            project.cleanup()
     else: # 3
         for project in D4JMining.get_all_projects(project_name, dir_path).values():
             try:
@@ -155,8 +161,9 @@ if __name__ == "__main__":
                     continue
                 project.get_training_set()
                 ExperimentMatrix.experiment_classifiers(project.get_dir_id())
-                project.cleanup()
             except Exception as e:
                 traceback.print_exc()
                 print(e)
+            finally:
+                project.cleanup()
 
