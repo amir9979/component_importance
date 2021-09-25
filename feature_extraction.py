@@ -84,6 +84,8 @@ class FeatureExtraction(object):
         csv_data = []
         features_header_added = False
         for matrix_id in os.listdir(self.dir_id.dir_structure.mark):
+            if matrix_id == self.dir_id.id:
+                continue
             dir_id = DirId(self.dir_id.dir_structure, matrix_id)
             if not os.path.exists(dir_id.labeled_data):
                 print(f"{dir_id.labeled_data} is not exists")
