@@ -97,8 +97,10 @@ class ExperimentMatrix(object):
     def experiment(self):
         DirStructure.mkdir(self.dir_id.experiment_matrices)
         if not os.path.exists(self.dir_id.matrices):
+            print('no matrix')
             return
         if not self.bugs:
+            print('no bugs')
             return
         results = dict()
         with open(self.dir_id.matrices) as f:
@@ -114,8 +116,6 @@ class ExperimentMatrix(object):
                 results.setdefault(matrix_name, dict())[alpha] = Diagnosis_Results(ei.diagnoses, ei.initial_tests, ei.error).metrics
         with open(self.dir_id.experiments, "w") as f:
             json.dump(results, f)
-        with open(self.dir_id.experiments) as f:
-            return json.loads(f.read())
 
     @staticmethod
     def experiment_classifiers(dir_id):
