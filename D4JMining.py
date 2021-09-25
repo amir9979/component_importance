@@ -149,6 +149,8 @@ if __name__ == "__main__":
     else: # 3
         for project in D4JMining.get_all_projects(project_name, dir_path).values():
             try:
+                if not project.is_marked():
+                    continue
                 project.get_training_set()
                 ExperimentMatrix.experiment_classifiers(project.get_dir_id())
                 project.cleanup()
