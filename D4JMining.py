@@ -51,7 +51,7 @@ class D4JMining(D4JReproducer):
         self.set_traces(traces)
         tests_to_trace = []
         for t in traces:
-            tests_to_trace.append(TestResult(t, 'failure' if t in self.failing_tests else 'pass'))
+            tests_to_trace.append(TestResult(t, 'failure' if t.lower().replace('()','') in self.failing_tests else 'pass'))
         self.set_tests_to_trace(tests_to_trace)
         self.set_surefire_tests(dict(map(lambda x: (x.full_name, x), tests_to_trace)))
         with open(os.path.join(self.bug_mining_dir, 'test_details.json')) as f:

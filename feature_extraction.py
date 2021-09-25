@@ -90,6 +90,8 @@ class FeatureExtraction(object):
                 continue
             with open(dir_id.labeled_data) as f:
                 data = json.loads(f.read())
+            if not data:
+                continue
             csv_data.extend(self.get_features(data, features_header_added))
             features_header_added = True
         with open(self.dir_id.training_set, "w") as f:
