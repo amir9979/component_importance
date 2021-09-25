@@ -113,7 +113,9 @@ class ExperimentMatrix(object):
                     json.dump(matrix, f)
                 ei = read_json_planning_instance(matrix)
                 ei.diagnose()
-                results.setdefault(matrix_name, dict())[alpha] = Diagnosis_Results(ei.diagnoses, ei.initial_tests, ei.error).metrics
+                metrics = Diagnosis_Results(ei.diagnoses, ei.initial_tests, ei.error).metrics
+                print(metrics)
+                results.setdefault(matrix_name, dict())[alpha] = metrics
         with open(self.dir_id.experiments, "w") as f:
             json.dump(results, f)
 
