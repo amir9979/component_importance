@@ -60,3 +60,5 @@ class DirId(object):
         shutil.rmtree(self.files_commits, ignore_errors=True)
         shutil.rmtree(self.files_functions, ignore_errors=True)
         shutil.rmtree(self.execution_graphs, ignore_errors=True)
+        shutil.rmtree(self.unlabeled_data, ignore_errors=True)
+        shutil.rmtree(self.call_graphs, ignore_errors=True)

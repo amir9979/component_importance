@@ -9,6 +9,7 @@ import sys
 import pandas as pd
 import json
 import shutil
+import argparse
 from jcov_parser import JcovParser
 from experiment import ExperimentMatrix
 import xml.etree.cElementTree as et
@@ -142,30 +143,51 @@ class D4JMining(D4JReproducer):
         return D4JMining.get_all_projects(project_name, dir_path)[project_ind]
 
 
-if __name__ == "__main__":
-    dir_path = sys.argv[1]
-    project_name = sys.argv[2]
-    if dir_path == 'base':
-        dir_path = DIR_BASE_PATH
-    if len(sys.argv) == 4:
-        project = D4JMining.read_data_dir(sys.argv[3], project_name, dir_path)
+def do_all_for_project(dir_path, project_name, ind):
+    project = D4JMining.read_data_dir(ind, project_name, dir_path)
+    try:
+        project.do_all()
+    except Exception as e:
+        pass
+    finally:
+        project.cleanup()
+
+
+def experiment_classifiers(dir_path, project_name, ind):
+    project = D4JMining.read_data_dir(ind, project_name, dir_path)
+    try:
+        ExperimentMatrix.experiment_classifiers(project.get_dir_id())
+    except Exception as e:
+        traceback.print_exc()
+        print(e)
+    finally:
+        project.cleanup()
+
+
+def extract_training_set(dir_path, project_name, ind):
+    for project in D4JMining.get_all_projects(project_name, dir_path).values():
         try:
-            project.do_all()
+            if not os.path.exists(project.get_dir_id().traces_json):
+                continue
+            project.get_training_set()
         except Exception as e:
-            pass
+            traceback.print_exc()
+            print(e)
         finally:
-            project.cleanup()
-    else: # 3
-        for project in D4JMining.get_all_projects(project_name, dir_path).values():
-            try:
-                if not os.path.exists(project.get_dir_id().traces_json):
-                    continue
-                project.get_training_set()
-                ExperimentMatrix.experiment_classifiers(project.get_dir_id())
-                project.full_cleanup()
-            except Exception as e:
-                traceback.print_exc()
-                print(e)
-                project.full_cleanup()
-        pd.concat(map(pd.read_csv, glob.glob(os.path.join(DirStructure(dir_path).experiments, "*")))).to_csv(DirStructure(dir_path).experiment + '.csv', index=False)
-        pd.concat(map(pd.read_csv, glob.glob(os.path.join(DirStructure(dir_path).classification_metrics, "*")))).to_csv(DirStructure(dir_path).classification_evaluate + '.csv', index=False)
+            project.full_cleanup()
+
+def aggragate(dir_path, project_name, ind):
+    pd.concat(map(pd.read_csv, glob.glob(os.path.join(DirStructure(dir_path).experiments, "*")))).to_csv(
+        DirStructure(dir_path).experiment + '.csv', index=False)
+    pd.concat(map(pd.read_csv, glob.glob(os.path.join(DirStructure(dir_path).classification_metrics, "*")))).to_csv(
+        DirStructure(dir_path).classification_evaluate + '.csv', index=False)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Execute project data')
+    parser.add_argument('-d', '--dir_path', dest='dir_path', action='store', help='path to extract to', default=DIR_BASE_PATH)
+    parser.add_argument('-p', '--project_name', dest='project_name', action='store', help='project_name', default='')
+    parser.add_argument('-f', '--flow', dest='flow', action='store', help='flow to exec', default='do_all')
+    parser.add_argument('-i', '--ind', dest='bug_ind', action='store', help='the bug_ind', default='-1')
+    args = parser.parse_args()
+    {'do_all': do_all_for_project, 'training_set': extract_training_set, 'experiment': experiment_classifiers, 'aggragate' : aggragate }[args.flow](args.dir_path, args.project_name, args.ind)
