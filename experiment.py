@@ -115,6 +115,7 @@ class ExperimentMatrix(object):
                 ei.diagnose()
                 metrics = Diagnosis_Results(ei.diagnoses, ei.initial_tests, ei.error).metrics
                 results.setdefault(matrix_name, dict())[alpha] = metrics
+        print(results)
         with open(self.dir_id.experiments, "w") as f:
             json.dump(results, f)
 
