@@ -190,4 +190,4 @@ if __name__ == "__main__":
     parser.add_argument('-f', '--flow', dest='flow', action='store', help='flow to exec', default='do_all')
     parser.add_argument('-i', '--ind', dest='bug_ind', action='store', help='the bug_ind', default='-1')
     args = parser.parse_args()
-    {'do_all': do_all_for_project, 'training_set': extract_training_set, 'experiment': experiment_classifiers, 'aggragate' : aggragate }[args.flow](args.dir_path, args.project_name, args.ind)
+    {'do_all': do_all_for_project, 'training_set': extract_training_set, 'experiment': experiment_classifiers, 'aggragate' : aggragate }[args.flow](args.dir_path, args.project_name, args.bug_ind)
