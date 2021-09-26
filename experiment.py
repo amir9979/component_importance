@@ -4,7 +4,7 @@ import json
 import os
 import csv
 import copy
-import sys
+import pandas as pd
 from sfl.sfl.Diagnoser.diagnoserUtils import write_json_planning_file, read_json_planning_instance, read_json_planning_file
 from sfl.sfl.Diagnoser.Experiment_Data import Experiment_Data
 from sfl.sfl.Diagnoser.Diagnosis_Results import Diagnosis_Results
@@ -102,7 +102,7 @@ class ExperimentMatrix(object):
         if not self.bugs:
             print('no bugs')
             return
-        results = dict()
+        results = []
         with open(self.dir_id.matrices) as f:
             json_matrix = json.loads(f.read())
         for alpha in ExperimentMatrix.ALPHA_RANGE:
@@ -114,10 +114,10 @@ class ExperimentMatrix(object):
                 ei = read_json_planning_instance(matrix)
                 ei.diagnose()
                 metrics = Diagnosis_Results(ei.diagnoses, ei.initial_tests, ei.error).metrics
-                results.setdefault(matrix_name, dict())[alpha] = metrics
-        print(results)
-        with open(self.dir_id.experiments, "w") as f:
-            json.dump(results, f)
+                metrics['learner'] = matrix_name
+                metrics['alpha'] = alpha
+                results.append(metrics)
+        pd.DataFrame(results).to_csv(self.dir_id.experiments, index=False)
 
     @staticmethod
     def experiment_classifiers(dir_id):

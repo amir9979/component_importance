@@ -5,7 +5,7 @@ import shutil
 
 class DirStructure(object):
     DIRS = ["clones", "mvn_outputs", "matrices", "traces", "traces_json", "call_graphs", "execution_graphs",
-            "javadoc", "files_packages", "files_commits", "mark", "bugs", "experiments", "files_functions",
+            "javadoc", "files_packages", "files_commits", "mark", "bugs", "experiments", "experiments_df", "files_functions",
             "labels", "features", "labeled_data", "unlabeled_data", "training_set", "testing_set", "files_traces", "tests_results",
             "feature_importance", "classification_metrics", "training_describe", "testing_describe", "experiment_matrices"]
     RESULTS = ["experiment", "classification_evaluate"]
