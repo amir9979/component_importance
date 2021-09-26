@@ -161,9 +161,8 @@ if __name__ == "__main__":
                     continue
                 project.get_training_set()
                 ExperimentMatrix.experiment_classifiers(project.get_dir_id())
+                project.full_cleanup()
             except Exception as e:
                 traceback.print_exc()
                 print(e)
-            finally:
                 project.full_cleanup()
-
