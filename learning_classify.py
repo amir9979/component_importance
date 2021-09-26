@@ -109,17 +109,17 @@ class LearningClassify(InfluenceClassify):
         from sklearn.ensemble import ExtraTreesClassifier
         from sklearn.feature_selection import VarianceThreshold
         ans = [LearningClassify(dir_id, RandomForestClassifier(n_estimators=10, random_state=42))
-                # LearningClassify(dir_id, GradientBoostingClassifier()),
-                # LearningClassify(dir_id, DecisionTreeClassifier()),
-                #LearningClassify(dir_id, MLPClassifier(solver='adam', alpha=1e-5, activation='relu', max_iter=3000, hidden_layer_sizes=(30, 30, 30, 30, 30), random_state=13)),
-                # LearningClassify(dir_id, LogisticRegression()),
-                #LearningClassify(dir_id, KNeighborsClassifier()),
-                #LearningClassify(dir_id, SVC(probability=True)),
-                #LearningClassify(dir_id, GaussianNB()),
-                #LearningClassify(dir_id, ExtraTreesClassifier(n_estimators=100, random_state=0)),
-                #LearningClassify(dir_id, make_pipeline(VarianceThreshold(threshold=(.8 * (1 - .8))), DecisionTreeClassifier()), "VarianceThreshold"),
-                #LearningClassify(dir_id, make_pipeline(SelectKBest(chi2, k=10), DecisionTreeClassifier()), "SelectKBest_chi"),
-                #LearningClassify(dir_id, make_pipeline(SelectKBest(k=10), DecisionTreeClassifier()), "SelectKBest_f_classif")
+                LearningClassify(dir_id, GradientBoostingClassifier()),
+                LearningClassify(dir_id, DecisionTreeClassifier()),
+                LearningClassify(dir_id, MLPClassifier(solver='adam', alpha=1e-5, activation='relu', max_iter=3000, hidden_layer_sizes=(30, 30, 30, 30, 30), random_state=13)),
+                LearningClassify(dir_id, LogisticRegression()),
+                LearningClassify(dir_id, KNeighborsClassifier()),
+                LearningClassify(dir_id, SVC(probability=True)),
+                LearningClassify(dir_id, GaussianNB()),
+                LearningClassify(dir_id, ExtraTreesClassifier(n_estimators=100, random_state=0)),
+                LearningClassify(dir_id, make_pipeline(VarianceThreshold(threshold=(.8 * (1 - .8))), DecisionTreeClassifier()), "VarianceThreshold"),
+                LearningClassify(dir_id, make_pipeline(SelectKBest(chi2, k=10), DecisionTreeClassifier()), "SelectKBest_chi"),
+                LearningClassify(dir_id, make_pipeline(SelectKBest(k=10), DecisionTreeClassifier()), "SelectKBest_f_classif")
                 ]
         pd.concat(map(lambda x: x.cross_validation(), ans)).to_csv(dir_id.classification_metrics, index=False)
         return ans
