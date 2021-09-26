@@ -167,6 +167,5 @@ if __name__ == "__main__":
                 traceback.print_exc()
                 print(e)
                 project.full_cleanup()
-        pd.concat(map(pd.read_csv, glob.glob(os.path.join(DirStructure(dir_path).experiments, "*")))).to_csv(DirStructure(dir_path).experiment, index=False)
-        pd.concat(map(pd.read_csv, glob.glob(os.path.join(DirStructure(dir_path).classification_metrics, "*")))).to_csv(DirStructure(dir_path).classification_evaluate, index=False)
-
+        pd.concat(map(pd.read_csv, glob.glob(os.path.join(DirStructure(dir_path).experiments, "*")))).to_csv(DirStructure(dir_path).experiment + '.csv', index=False)
+        pd.concat(map(pd.read_csv, glob.glob(os.path.join(DirStructure(dir_path).classification_metrics, "*")))).to_csv(DirStructure(dir_path).classification_evaluate + '.csv', index=False)
