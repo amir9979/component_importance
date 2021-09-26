@@ -53,3 +53,10 @@ class DirId(object):
 
     def cleanup(self):
         shutil.rmtree(self.clones, ignore_errors=True)
+
+    def full_cleanup(self):
+        shutil.rmtree(self.clones, ignore_errors=True)
+        shutil.rmtree(self.javadoc, ignore_errors=True)
+        shutil.rmtree(self.files_commits, ignore_errors=True)
+        shutil.rmtree(self.files_functions, ignore_errors=True)
+        shutil.rmtree(self.execution_graphs, ignore_errors=True)

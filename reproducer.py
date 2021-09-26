@@ -304,6 +304,9 @@ class Reproducer(object):
     def cleanup(self):
         self.get_dir_id().cleanup()
 
+    def full_cleanup(self):
+        self.get_dir_id().full_cleanup()
+
     def get_training_set(self):
         FeatureExtraction(self.get_dir_id()).get_training_set()
 

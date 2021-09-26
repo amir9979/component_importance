@@ -165,5 +165,5 @@ if __name__ == "__main__":
                 traceback.print_exc()
                 print(e)
             finally:
-                project.cleanup()
+                project.full_cleanup()
 
