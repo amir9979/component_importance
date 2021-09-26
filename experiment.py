@@ -117,6 +117,7 @@ class ExperimentMatrix(object):
                 metrics['learner'] = matrix_name
                 metrics['alpha'] = alpha
                 results.append(metrics)
+        print(metrics)
         pd.DataFrame(results).to_csv(self.dir_id.experiments, index=False)
 
     @staticmethod
