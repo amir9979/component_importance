@@ -3,6 +3,7 @@ from d4j import D4JReproducer
 from dir_structure import DirStructure, DirId
 from reproducer import Reproducer
 import os
+import glob
 import traceback
 import sys
 import pandas as pd
@@ -166,3 +167,6 @@ if __name__ == "__main__":
                 traceback.print_exc()
                 print(e)
                 project.full_cleanup()
+        pd.concat(map(pd.read_csv, glob.glob(os.path.join(DirStructure(dir_path).experiments, "*")))).to_csv(DirStructure(dir_path).experiment, index=False)
+        pd.concat(map(pd.read_csv, glob.glob(os.path.join(DirStructure(dir_path).classification_metrics, "*")))).to_csv(DirStructure(dir_path).classification_evaluate, index=False)
+

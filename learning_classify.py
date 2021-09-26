@@ -44,7 +44,6 @@ class LearningClassify(InfluenceClassify):
         super(LearningClassify, self).__init__(dir_id)
         self.classifier = classifier
         self.additional_name = additional_name
-        self.cross_validation()
         self.describe()
         model = self.get_classifier().fit(self.get_training_featues(), self.get_training_labels())
         prediction_probabilities = self.get_classifier().predict_proba(self.get_testing_featues())
@@ -109,7 +108,7 @@ class LearningClassify(InfluenceClassify):
         from sklearn.naive_bayes import GaussianNB
         from sklearn.ensemble import ExtraTreesClassifier
         from sklearn.feature_selection import VarianceThreshold
-        return [LearningClassify(dir_id, RandomForestClassifier(n_estimators=10, random_state=42))
+        ans = [LearningClassify(dir_id, RandomForestClassifier(n_estimators=10, random_state=42))
                 # LearningClassify(dir_id, GradientBoostingClassifier()),
                 # LearningClassify(dir_id, DecisionTreeClassifier()),
                 #LearningClassify(dir_id, MLPClassifier(solver='adam', alpha=1e-5, activation='relu', max_iter=3000, hidden_layer_sizes=(30, 30, 30, 30, 30), random_state=13)),
@@ -122,6 +121,8 @@ class LearningClassify(InfluenceClassify):
                 #LearningClassify(dir_id, make_pipeline(SelectKBest(chi2, k=10), DecisionTreeClassifier()), "SelectKBest_chi"),
                 #LearningClassify(dir_id, make_pipeline(SelectKBest(k=10), DecisionTreeClassifier()), "SelectKBest_f_classif")
                 ]
+        pd.concat(map(lambda x: x.cross_validation(), ans)).to_csv(dir_id.classification_metrics, index=False)
+        return ans
 
     @staticmethod
     def drop(features):
@@ -207,12 +208,11 @@ class LearningClassify(InfluenceClassify):
         # scoring["mse1"] = metrics.make_scorer(mse1, needs_proba=True)
         self.get_classifier().fit(self.get_training_featues(), self.get_training_labels())
         scores = cross_validate(self.get_classifier(), self.get_training_featues(), self.get_training_labels(), cv=3, scoring=scoring, return_train_score=True)
-        all_scores = dict()
+        all_scores = {'classifier_name' : self.get_name(), 'id': self.dir_id.id}
         for score in scores:
             all_scores["{0}_mean".format(score)] = scores[score].mean()
             all_scores["{0}_std".format(score)] = scores[score].std()
-        with open(os.path.join(DirStructure.mkdir(self.get_dir_id().classification_metrics), self.get_name()), "w") as f:
-            json.dump(all_scores, f)
+        return pd.DataFrame([all_scores])
 
     def _describe_helper(self, dir_name, array):
         pd.DataFrame(array).describe().to_csv(getattr(self.get_dir_id(), dir_name))

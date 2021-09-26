@@ -11,6 +11,9 @@ from sfl.sfl.Diagnoser.Diagnosis_Results import Diagnosis_Results
 from operator import itemgetter
 from numpy import mean
 from functools import reduce
+import glob
+import os
+
 
 class Experiment(object):
     def __init__(self, dir_structure):
@@ -25,23 +28,7 @@ class Experiment(object):
                 pass
 
     def experiment(self, skip_if_not_exists=False):
-        sanity_results = dict(list(map(lambda s: (s.matrix_id, s.experiment()), filter(lambda x: x.is_exists() or not skip_if_not_exists, self.matrices))))
-        results_header = ["id", "matrix_name", "alpha"]
-        metrics_header_added = False
-        results = []
-        for id in sanity_results:
-            for matrix_name in sanity_results[id]:
-                for alpha in sanity_results[id][matrix_name]:
-                    metrics = sanity_results[id][matrix_name][alpha]
-                    header = sorted(metrics)
-                    if not metrics_header_added:
-                        results_header.extend(header)
-                        results.append(results_header)
-                        metrics_header_added = True
-                    results_row = [id, matrix_name, alpha] + list(map(lambda h: metrics[h], header))
-                    results.append(results_row)
-        with open(self.dir_structure.experiment, "w") as f:
-            csv.writer(f).writerows(results)
+        pd.concat(map(pd.read_csv, glob.glob(os.path.join(self.dir_structure.experiments, "*")))).to_csv(self.dir_structure.experiment, index=False)
         self.classification_evaluate()
 
     def classification_evaluate(self):
@@ -116,8 +103,8 @@ class ExperimentMatrix(object):
                 metrics = Diagnosis_Results(ei.diagnoses, ei.initial_tests, ei.error).metrics
                 metrics['learner'] = matrix_name
                 metrics['alpha'] = alpha
+                metrics['id'] = self.dir_id.id
                 results.append(metrics)
-        print(metrics)
         pd.DataFrame(results).to_csv(self.dir_id.experiments, index=False)
 
     @staticmethod
