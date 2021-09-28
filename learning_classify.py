@@ -116,10 +116,10 @@ class LearningClassify(InfluenceClassify):
                 LearningClassify(dir_id, KNeighborsClassifier()),
                 LearningClassify(dir_id, SVC(probability=True)),
                 LearningClassify(dir_id, GaussianNB()),
-                LearningClassify(dir_id, ExtraTreesClassifier(n_estimators=100, random_state=0)),
-                LearningClassify(dir_id, make_pipeline(VarianceThreshold(threshold=(.8 * (1 - .8))), DecisionTreeClassifier()), "VarianceThreshold"),
-                LearningClassify(dir_id, make_pipeline(SelectKBest(chi2, k=10), DecisionTreeClassifier()), "SelectKBest_chi"),
-                LearningClassify(dir_id, make_pipeline(SelectKBest(k=10), DecisionTreeClassifier()), "SelectKBest_f_classif")
+                LearningClassify(dir_id, ExtraTreesClassifier(n_estimators=100, random_state=0))
+                # LearningClassify(dir_id, make_pipeline(VarianceThreshold(threshold=(.8 * (1 - .8))), DecisionTreeClassifier()), "VarianceThreshold"),
+                # LearningClassify(dir_id, make_pipeline(SelectKBest(chi2, k=10), DecisionTreeClassifier()), "SelectKBest_chi"),
+                # LearningClassify(dir_id, make_pipeline(SelectKBest(k=10), DecisionTreeClassifier()), "SelectKBest_f_classif")
                 ]
         pd.concat(map(lambda x: x.cross_validation(), ans)).to_csv(dir_id.classification_metrics, index=False)
         return ans
