@@ -139,7 +139,7 @@ class D4JMining(D4JReproducer):
         ind = int(ind)
         if len(os.listdir(bug_mining)) <= ind:
             raise Exception('no such ind')
-        project_ind = int(os.listdir(bug_mining)[ind].replace(D4JMining.D4J_PREFIX, ''))
+        project_ind = int(sorted(os.listdir(bug_mining))[ind].replace(D4JMining.D4J_PREFIX, ''))
         return D4JMining.get_all_projects(project_name, dir_path)[project_ind]
 
 
