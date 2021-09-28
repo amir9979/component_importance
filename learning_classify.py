@@ -13,7 +13,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
 import json
-import os
+import traceback
 from itertools import product
 
 
@@ -44,12 +44,15 @@ class LearningClassify(InfluenceClassify):
         super(LearningClassify, self).__init__(dir_id)
         self.classifier = classifier
         self.additional_name = additional_name
+        self.influence_dict = {}
+        # self.init_model()
+
+    def init_model(self):
         self.describe()
         model = self.get_classifier().fit(self.get_training_featues(), self.get_training_labels())
         prediction_probabilities = self.get_classifier().predict_proba(self.get_testing_featues())
         prediction = self.get_classifier().predict(self.get_testing_featues())
         probabilities_index = LearningClassify.PROBABILITY[prediction_probabilities[0][0] >= 0.5][prediction[0]]
-        self.influence_dict = {}
         for test_id, probability in zip(self.get_test_ids(),
                                         list(map(itemgetter(probabilities_index), prediction_probabilities))):
             test_name, function_name = test_id
@@ -121,7 +124,15 @@ class LearningClassify(InfluenceClassify):
                 # LearningClassify(dir_id, make_pipeline(SelectKBest(chi2, k=10), DecisionTreeClassifier()), "SelectKBest_chi"),
                 # LearningClassify(dir_id, make_pipeline(SelectKBest(k=10), DecisionTreeClassifier()), "SelectKBest_f_classif")
                 ]
-        pd.concat(map(lambda x: x.cross_validation(), ans)).to_csv(dir_id.classification_metrics, index=False)
+        lcs = []
+        for lc in ans:
+            try:
+                lc.init_model()
+                lcs.append(lc)
+            except Exception as e:
+                traceback.print_exc()
+                print(e)
+        pd.concat(map(lambda x: x.cross_validation(), lcs)).to_csv(dir_id.classification_metrics, index=False)
         return ans
 
     @staticmethod
